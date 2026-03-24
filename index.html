@@ -360,6 +360,16 @@
             color: #888;
         }
         
+        .level-name {
+            font-size: 9px;
+            color: #666;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
         /* 底部导航 */
         .bottom-nav {
             position: fixed;
@@ -546,6 +556,7 @@
         <div class="toast" id="toast"></div>
     </div>
     
+    <script src="words.js"></script>
     <script>
         // ==================== 数据系统 ====================
         
@@ -555,13 +566,16 @@
         // 游戏配置
         const CONFIG = {
             levelsPerWorld: 20,  // 每个大关的关卡数
-            wordsPerLevel: 25,   // 每关单词数
+            wordsPerLevel: 20,   // 每关单词数（实际使用词库数据）
             questionTypes: 5,   // 每关题型数
             reviewRatio: 0.2,   // 错题混入比例
             cosBucket: 'mario-1258221587',
             cosRegion: 'ap-shanghai',
             cosPath: 'small-blue-learn/users/'
         };
+        
+        // 关卡数据（从words.js获取）
+        const GAME_LEVELS = typeof LEVELS !== 'undefined' ? LEVELS : [];
         
         // 题型定义
         const QUESTION_TYPES = [
@@ -728,9 +742,12 @@
             const grid = document.getElementById('levelGrid');
             grid.innerHTML = '';
             
-            // 生成20个关卡
-            for (let i = 1; i <= 20; i++) {
+            // 使用词库中的关卡数量（默认32关）
+            const totalLevels = GAME_LEVELS.length || 20;
+            
+            for (let i = 1; i <= totalLevels; i++) {
                 const levelData = user.levels[i] || { completed: false, stars: 0 };
+                const levelInfo = GAME_LEVELS[i - 1] || { name: `第${i}关` };
                 
                 const node = document.createElement('div');
                 node.className = 'level-node';
@@ -745,6 +762,7 @@
                 
                 node.innerHTML = `
                     <span class="level-number">${i}</span>
+                    <span class="level-name">${levelInfo.name}</span>
                     <span class="level-status">${levelData.completed ? '⭐'.repeat(levelData.stars) : (i === 1 || user.levels[i-1]?.completed ? '进行中' : '🔒')}</span>
                 `;
                 
@@ -755,8 +773,25 @@
         
         // 开始关卡
         function playLevel(level) {
-            showToast(`开始第 ${level} 关！`);
-            // TODO: 实现关卡逻辑
+            const user = gameState.users[gameState.currentUser];
+            const levelInfo = GAME_LEVELS[level - 1];
+            const words = getLevelWords ? getLevelWords(level) : [];
+            
+            if (words.length === 0) {
+                showToast('该关卡暂无单词数据');
+                return;
+            }
+            
+            gameState.currentLevel = level;
+            gameState.currentWords = words;
+            
+            showToast(`开始第 ${level} 关：${levelInfo?.name || ''}（${words.length}个词）`);
+            
+            // TODO: 实现闯关答题逻辑
+            // 1. 混合新词和错题
+            // 2. 随机分配题型
+            // 3. 答题界面
+            // 4. 计分和保存
         }
         
         // ==================== 初始化 ====================
