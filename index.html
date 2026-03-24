@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>小蓝学</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  background:#1a1a2e;min-height:100vh;overflow:hidden;user-select:none;
+  -webkit-user-select:none
+}
+.app{position:relative;width:100%;min-height:100vh;overflow:hidden}
+canvas{display:block;width:100%;height:100vh}
+.hud{position:absolute;top:0;left:0;right:0;padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:5;pointer-events:none}
+.hud-title{
+  background:rgba(255,255,255,.92);border-radius:8px;padding:5px 12px;
+  font-size:14px;font-weight:900;color:#2d5a2d;
+  box-shadow:2px 2px 0 #1a3a1a;
+  border:2px solid #4a8a4a
+}
+.hud-right{background:rgba(255,255,255,.92);border-radius:8px;padding:5px 12px;border:2px solid #4a8a4a}
+.hud-right .n{font-size:15px;font-weight:900;color:#e74c3c}
+.hud-right .l{font-size:9px;color:#888;font-weight:600}
+
+/* Pixel quiz modal */
+.quiz-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;
+  z-index:20
+}
+.quiz-inner{
+  background:#fef9ec;border-radius:4px;padding:24px 18px 20px;width:92%;max-width:370px;
+  border:4px solid #2d5a2d;box-shadow:6px 6px 0 #1a3a1a;
+  image-rendering:pixelated;
+  animation:modalIn .15s ease
+}
+@keyframes modalIn{from{transform:scale(.9)}to{transform:scale(1)}}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+}
+.quiz-inner.wrong{animation:shake .3s ease}
+.quiz-inner.correct{background:#e8f9ed}
+
+.q-cat{
+  background:#c8e6c9;color:#2d5a2d;border-radius:2px;padding:3px 12px;
+  font-size:10px;font-weight:900;display:inline-block;margin-bottom:12px;
+  border:2px solid #4a8a4a;text-transform:uppercase;letter-spacing:1px
+}
+.q-word-wrap{position:relative;display:inline-block;margin-bottom:2px}
+.q-word{
+  font-size:11vw;font-weight:900;color:#1a1a2e;line-height:1;
+  font-family:"Courier New",monospace;letter-spacing:2px;
+  text-shadow:2px 2px 0 #aaa
+}
+.q-speak{
+  position:absolute;right:-42px;top:50%;transform:translateY(-50%);
+  width:36px;height:36px;border-radius:2px;background:#e74c3c;border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:white;box-shadow:3px 3px 0 #922b3e;
+  border:2px solid #922b3e;-webkit-tap-highlight-color:transparent;
+  transition:transform .08s
+}
+.q-speak:active{transform:translateY(-50%) translateY(2px);box-shadow:1px 1px 0 #922b3e}
+.q-phon{font-size:3.5vw;color:#aaa;margin-bottom:4px;font-style:italic}
+.q-hint{font-size:3vw;color:#999;margin-bottom:16px}
+
+.quiz-choices{ display:grid; grid-template-columns:1fr 1fr; gap:6px }
+.quiz-choices button{
+  padding:12px 6px;border:3px solid #2d5a2d;border-radius:2px;
+  background:#fff;font-size:4.2vw;font-weight:700;color:#1a1a2e;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  box-shadow:3px 3px 0 #1a3a1a;
+  transition:all .08s;font-family:inherit;
+  line-height:1.3
+}
+.quiz-choices button:hover{background:#f0fff0}
+.quiz-choices button:active{transform:translateY(2px);box-shadow:1px 1px 0 #1a3a1a}
+.quiz-choices button.right-btn{border-color:#27ae60;background:#a8e6cf;color:#1a5a2d;box-shadow:3px 3px 0 #1a6a3a}
+.quiz-choices button.wrong-btn{border-color:#c0392b;background:#ffcccc;color:#7a1a1a;box-shadow:3px 3px 0 #6a1a1a}
+.quiz-choices button.dim-btn{opacity:.25}
+
+/* Star progress dots */
+.q-stars{display:flex;justify-content:center;gap:5px;margin-bottom:10px}
+.q-star{
+  width:14px;height:14px;border-radius:2px;
+  border:2px solid #aaa;background:#ddd;
+  transition:background .2s,border-color .2s
+}
+.q-star.lit{background:#FFD700;border-color:#f39c12;box-shadow:0 0 6px #FFD700}
+
+/* Win modal */
+.win-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;
+  flex-direction:column;z-index:30;color:white;gap:12px
+}
+.win-title{font-size:16vw;text-align:center;line-height:1}
+.win-sub{font-size:5vw;font-weight:900;text-align:center}
+.win-stats{font-size:3.5vw;opacity:.75;text-align:center}
+.win-restart{
+  margin-top:8px;padding:12px 32px;background:#27ae60;border:none;border-radius:2px;
+  color:white;font-size:4.5vw;font-weight:900;cursor:pointer;
+  box-shadow:4px 4px 0 #1a5a2d;border:2px solid #1a5a2d;
+  -webkit-tap-highlight-color:transparent
+}
+.win-restart:active{transform:translateY(2px);box-shadow:2px 2px 0 #1a5a2d}
+
+/* Pixel progress bar */
+.px-bar{
+  position:absolute;bottom:16px;left:14px;right:14px;
+  height:12px;border-radius:0;border:2px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.3)
+}
+.px-fill{
+  height:100%;background:#FFD700;
+  transition:width .35s ease
+}
+.px-label{
+  position:absolute;bottom:32px;width:100%;text-align:center;
+  font-size:9px;color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.5px
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <canvas id="canvas"></canvas>
+  <div class="hud">
+    <div class="hud-title">小蓝学</div>
+    <div class="hud-right">
+      <div class="n"><span id="xpNum">0</span> XP</div>
+      <div class="l">🔥 <span id="streakNum">0</span></div>
+    </div>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div class="quiz-modal" id="quizModal">
+    <div class="quiz-inner" id="quizInner">
+      <div class="q-stars" id="qStars"></div>
+      <div class="q-cat" id="qCat"></div>
+      <div class="q-word-wrap">
+        <div class="q-word" id="qWord"></div>
+        <button class="q-speak" id="qSpeak" aria-label="播放发音">🔊</button>
+      </div>
+      <div class="q-phon" id="qPhon"></div>
+      <div class="q-hint">选出正确的中文意思</div>
+      <div class="quiz-choices" id="qChoices"></div>
+    </div>
+  </div>
+
+  <!-- Win Modal -->
+  <div class="win-modal" id="winModal">
+    <div class="win-title">🎉</div>
+    <div class="win-sub">第<span id="winStation">1</span>关 通关！</div>
+    <div class="win-stats" id="winStats"></div>
+    <button class="win-restart" id="winRestart">继续挑战 →</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// ============================================================
+//  小蓝学 · 像素复古风 · TTS发音 · 120词
+// ============================================================
+(function() {
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var GY = 0.58;
+  var LX = 0.07, RX = 0.93;
+  var STATION_N = 11;
+  var WORDS_PER = Math.ceil(VOCABULARY.length / STATION_N);
+
+  var STATE = {
+    phase: 'map',
+    station: 0,
+    words: [],
+    wi: 0,
+    done: 0,
+    xp: 0,
+    streak: 0,
+    last: null,
+    totalDone: 0,
+    mem: {},
+    cx: 0, tx: 0, cy: 0, vy: 0,
+    stations: []
+  };
+
+  // ---- resize ----
+  function resize() {
+    W = canvas.width = window.innerWidth * DPR;
+    H = canvas.height = window.innerHeight * DPR;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(DPR, DPR);
+    W = window.innerWidth; H = window.innerHeight;
+  }
+
+  function buildStations() {
+    var lx = W * LX, rx = W * RX;
+    STATE.stations = [];
+    for (var i = 0; i < STATION_N; i++) {
+      STATE.stations.push({
+        x: lx + (i / (STATION_N - 1)) * (rx - lx),
+        y: H * GY - 4,
+        done: i < STATE.station,
+        current: i === STATE.station
+      });
+    }
+    var cur = STATE.stations[STATE.station] || STATE.stations[0];
+    STATE.tx = cur.x; STATE.cx = STATE.tx;
+    STATE.cy = H * GY;
+  }
+
+  // ---- load / save ----
+  function load() {
+    try {
+      var d = JSON.parse(localStorage.getItem('xlan3') || '{}');
+      STATE.mem = d.mem || {};
+      STATE.xp = d.xp || 0;
+      STATE.streak = d.streak || 0;
+      STATE.last = d.last || null;
+      STATE.totalDone = d.totalDone || 0;
+      STATE.station = Math.min(d.station || 0, STATION_N - 1);
+    } catch(e) {}
+    refreshHUD();
+  }
+
+  function save() {
+    localStorage.setItem('xlan3', JSON.stringify({
+      mem: STATE.mem, xp: STATE.xp, streak: STATE.streak,
+      last: STATE.last, totalDone: STATE.totalDone, station: STATE.station
+    }));
+  }
+
+  function refreshHUD() {
+    document.getElementById('xpNum').textContent = STATE.xp;
+    document.getElementById('streakNum').textContent = STATE.streak;
+  }
+
+  // ---- TTS ----
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.05;
+    var voices = window.speechSynthesis.getVoices();
+    var enV = voices.find(function(v) {
+      return v.lang === 'en-US' && v.name.toLowerCase().indexOf('female') === -1;
+    }) || voices.find(function(v) { return v.lang === 'en-US'; });
+    if (enV) u.voice = enV;
+    window.speechSynthesis.speak(u);
+  }
+
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function() {
+      window.speechSynthesis.getVoices();
+    };
+  }
+
+  // ---- PIXEL DRAWING HELPERS ----
+
+  // Draw a pixel block (rectangle with pixel-snapped coords)
+  function px(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+  }
+
+  // Draw pixel tree at world coords (x, groundY)
+  function drawPixelTree(x, groundY, scale) {
+    var s = scale || 1;
+    // Trunk
+    px(x - 2*s, groundY - 14*s, 4*s, 14*s, '#5D4037');
+    // Foliage layers (bottom to top)
+    px(x - 9*s, groundY - 22*s, 18*s, 8*s, '#2E7D32');
+    px(x - 7*s, groundY - 30*s, 14*s, 9*s, '#388E3C');
+    px(x - 5*s, groundY - 37*s, 10*s, 8*s, '#43A047');
+    px(x - 3*s, groundY - 42*s, 6*s, 6*s, '#4CAF50');
+  }
+
+  // Draw pixel character at world coords
+  function drawPixelChar(x, y) {
+    var t = Date.now() * 0.006;
+    var legO = Math.sin(t) * 3;
+    // Shoes
+    px(x - 7, y - 4, 6, 4, '#37474F');
+    px(x + 1, y - 4, 6, 4, '#37474F');
+    // Legs
+    px(x - 5, y - 10, 4, 8 + Math.round(legO), '#1565C0');
+    px(x + 1, y - 10, 4, 8 - Math.round(legO), '#1565C0');
+    // Body
+    px(x - 8, y - 26, 16, 17, '#E53935');
+    // Belt
+    px(x - 8, y - 12, 16, 3, '#4E342E');
+    // Arms
+    px(x - 12, y - 25, 5, 10, '#FFCCBC');
+    px(x + 7, y - 25, 5, 10, '#FFCCBC');
+    // Head
+    px(x - 6, y - 34, 12, 10, '#FFCCBC');
+    // Eyes
+    px(x - 4, y - 32, 2, 2, '#1a1a2e');
+    px(x + 2, y - 32, 2, 2, '#1a1a2e');
+    // Mouth
+    px(x - 2, y - 28, 4, 2, '#E53935');
+    // Hat (pixel cap)
+    px(x - 8, y - 40, 16, 5, '#C62828');
+    px(x - 5, y - 46, 10, 7, '#C62828');
+  }
+
+  // ---- BACKGROUND ----
+  function drawBg() {
+    var gy = H * GY;
+
+    // Sky gradient (dark night blue -> forest green)
+    var sky = ctx.createLinearGradient(0, 0, 0, gy);
+    sky.addColorStop(0, '#0d1b2a');
+    sky.addColorStop(0.4, '#1b3a4b');
+    sky.addColorStop(0.75, '#2d5a4a');
+    sky.addColorStop(1, '#3a7a5a');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, gy);
+
+    // Pixel stars
+    ctx.fillStyle = '#fff';
+    for (var si = 0; si < 40; si++) {
+      var sx = (si * 137.5 + 20) % W;
+      var sy = (si * 97.3 + 10) % (gy * 0.5);
+      var br = si % 4 === 0 ? 2 : 1;
+      ctx.fillRect(Math.round(sx), Math.round(sy), br, br);
+    }
+
+    // Moon (pixel circle)
+    var mx = W * 0.82, my = H * 0.09, mr = 20;
+    ctx.fillStyle = '#f5f0d0';
+    ctx.beginPath();
+    ctx.arc(mx, my, mr, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1b3a4b';
+    ctx.beginPath();
+    ctx.arc(mx + 6, my - 4, 15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pixel mountains (background layer)
+    ctx.fillStyle = '#1a4a3a';
+    ctx.beginPath();
+    ctx.moveTo(0, gy);
+    for (var mx2 = 0; mx2 <= W; mx2 += 6) {
+      ctx.lineTo(mx2, gy - 30 - Math.abs(Math.sin(mx2 * 0.012 + 1)) * 40);
+    }
+    ctx.lineTo(W, gy);
+    ctx.fill();
+
+    // Closer mountain
+    ctx.fillStyle = '#2d6a4a';
+    ctx.beginPath();
+    ctx.moveTo(0, gy);
+    for (var mx3 = 0; mx3 <= W; mx3 += 5) {
+      ctx.lineTo(mx3, gy - 18 - Math.abs(Math.sin(mx3 * 0.02 + 2)) * 25);
+    }
+    ctx.lineTo(W, gy);
+    ctx.fill();
+
+    // Ground
+    ctx.fillStyle = '#3a8a4a'; ctx.fillRect(0, gy, W, H - gy);
+    ctx.fillStyle = '#2d7a3a'; ctx.fillRect(0, gy, W, 5);
+    ctx.fillStyle = '#1d6a2a'; ctx.fillRect(0, gy + 5, W, 2);
+
+    // Dirt road
+    var roadX = W * LX - 10, roadW = W * (RX - LX) + 20;
+    ctx.fillStyle = '#8B6914'; ctx.fillRect(roadX, gy + 8, roadW, H * 0.16);
+    ctx.fillStyle = '#6B4F0A';
+    for (var rx2 = roadX; rx2 < roadX + roadW; rx2 += 20) {
+      ctx.fillRect(rx2 + 4, gy + H * 0.14, 14, 4);
+    }
+
+    // Side trees
+    for (var ti = 0; ti < 7; ti++) {
+      drawPixelTree(W * 0.03 + ti * 30, gy - 2, 0.7 + (ti % 3) * 0.2);
+    }
+    for (var ti2 = 0; ti2 < 7; ti2++) {
+      drawPixelTree(W * 0.88 - ti2 * 30, gy - 2, 0.75 + (ti2 % 3) * 0.18);
+    }
+  }
+
+  // ---- STATIONS ----
+  function drawStations() {
+    for (var i = 0; i < STATE.stations.length; i++) {
+      var s = STATE.stations[i];
+      var isDone = i < STATE.station;
+      var isCurr = i === STATE.station;
+      var baseColor = isDone ? '#555' : isCurr ? '#888' : '#444';
+      // Flag pole
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(s.x - 1, s.y - 50, 3, 50);
+      // Flag
+      ctx.fillStyle = isDone ? '#27ae60' : isCurr ? '#f39c12' : '#444';
+      ctx.fillRect(s.x + 2, s.y - 56, 16, 13);
+      // Pixel border on flag
+      ctx.fillStyle = isDone ? '#1a7a3a' : isCurr ? '#c77900' : '#333';
+      ctx.fillRect(s.x + 2, s.y - 56, 16, 2);
+      ctx.fillRect(s.x + 2, s.y - 44, 16, 2);
+      ctx.fillRect(s.x + 2, s.y - 56, 2, 13);
+      ctx.fillRect(s.x + 16, s.y - 56, 2, 13);
+      // Label on flag
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 8px Courier New';
+      ctx.textAlign = 'center';
+      ctx.fillText(isDone ? '✓' : isCurr ? '?' : (i + 1), s.x + 10, s.y - 46);
+      // Stone base
+      ctx.fillStyle = '#777';
+      ctx.fillRect(s.x - 8, s.y, 16, 7);
+      ctx.fillStyle = '#999';
+      ctx.fillRect(s.x - 6, s.y + 1, 12, 5);
+      // Station label
+      ctx.fillStyle = isCurr ? 'rgba(255,255,255,.9)' : 'rgba(255,255,255,.35)';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('第' + (i + 1) + '关', s.x, s.y + 20);
+    }
+  }
+
+  // ---- PROGRESS BAR ----
+  function drawProgress() {
+    var px2 = 14, py = H - 28, pw = W - 28, ph = 10;
+    ctx.fillStyle = 'rgba(0,0,0,.3)';
+    ctx.fillRect(px2, py, pw, ph);
+    ctx.fillStyle = '#FF6B35';
+    ctx.fillRect(px2, py, pw * (STATE.station / STATION_N), ph);
+    ctx.fillStyle = 'rgba(255,255,255,.7)';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(
+      '第' + (STATE.station + 1) + ' / ' + STATION_N + '关  ·  ' + STATE.totalDone + '词已学',
+      W / 2, py - 4
+    );
+  }
+
+  // ---- MAIN DRAW ----
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    drawBg();
+    drawStations();
+    drawPixelChar(STATE.cx, STATE.cy);
+    drawProgress();
+  }
+
+  // ---- UPDATE ----
+  function update() {
+    var dx = STATE.tx - STATE.cx;
+    STATE.cx += dx * 0.1;
+    if (Math.abs(dx) < 0.5) STATE.cx = STATE.tx;
+    if (STATE.vy !== 0) {
+      STATE.cy += STATE.vy;
+      STATE.vy += 0.8;
+      if (STATE.cy >= H * GY) { STATE.cy = H * GY; STATE.vy = 0; }
+    }
+  }
+
+  function loop() {
+    if (STATE.phase === 'map') { update(); draw(); }
+    requestAnimationFrame(loop);
+  }
+
+  // ---- INTERACTION ----
+  function canvasXY(e) {
+    var r = canvas.getBoundingClientRect();
+    var src = e.touches ? e.touches[0] : e;
+    return {
+      x: (src.clientX - r.left) * (W / r.width),
+      y: (src.clientY - r.top) * (H / r.height)
+    };
+  }
+
+  function handleCanvasClick(e) {
+    if (STATE.phase !== 'map') return;
+    var p = canvasXY(e);
+    for (var i = 0; i < STATE.stations.length; i++) {
+      var s = STATE.stations[i];
+      var d = Math.hypot(p.x - s.x, p.y - (s.y - 25));
+      if (d < 34) {
+        if (i === STATE.station) openQuiz();
+        else if (i < STATE.station) jumpStation(i);
+        return;
+      }
+    }
+  }
+
+  canvas.addEventListener('click', handleCanvasClick);
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    handleCanvasClick(e);
+  }, { passive: false });
+
+  // ---- QUIZ ----
+  function openQuiz() {
+    var si = STATE.station;
+    var start = si * WORDS_PER;
+    var end = Math.min(start + WORDS_PER, VOCABULARY.length);
+    STATE.words = VOCABULARY.slice(start, end);
+    STATE.words.sort(function() { return Math.random() - 0.5; });
+    STATE.wi = 0; STATE.done = 0;
+    STATE.phase = 'quiz';
+    document.getElementById('quizModal').style.display = 'flex';
+    renderQuiz();
+  }
+
+  function renderQuiz() {
+    var w = STATE.words[STATE.wi];
+    document.getElementById('qCat').textContent = w.category;
+    document.getElementById('qWord').textContent = w.word;
+    document.getElementById('qPhon').textContent = w.phonetic;
+
+    // Stars
+    var starsHtml = '';
+    for (var i = 0; i < STATE.words.length; i++) {
+      starsHtml += '<div class="q-star' + (i < STATE.done ? ' lit' : '') + '"></div>';
+    }
+    document.getElementById('qStars').innerHTML = starsHtml;
+
+    // Choices
+    var opts = makeChoices(w);
+    var html = '';
+    for (var j = 0; j < opts.length; j++) {
+      html += '<button class="qb" data-val="' + opts[j].replace(/"/g, '&quot;') + '">' + opts[j] + '</button>';
+    }
+    document.getElementById('qChoices').innerHTML = html;
+    var btns = document.querySelectorAll('.qb');
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].addEventListener('click', (function(val) { return function() { doAnswer(val); }; })(opts[k]));
+    }
+
+    // Reset inner style
+    var inner = document.getElementById('quizInner');
+    inner.classList.remove('correct', 'wrong');
+
+    // Auto play word
+    setTimeout(function() { speak(w.word + '. ' + w.sentence); }, 200);
+  }
+
+  function makeChoices(w) {
+    var pool = VOCABULARY.filter(function(v) { return v.id !== w.id; });
+    var same = pool.filter(function(v) { return v.category === w.category; }).slice(0, 3);
+    while (same.length < 3) {
+      var r = pool[Math.floor(Math.random() * pool.length)];
+      if (same.find(function(x) { return x.id === r.id; })) continue;
+      same.push(r);
+    }
+    var opts = [w.chinese].concat(same.map(function(v) { return v.chinese; }));
+    // Shuffle
+    for (var i = opts.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+    }
+    return opts;
+  }
+
+  function doAnswer(chosen) {
+    var btns = document.querySelectorAll('.qb');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].style.pointerEvents = 'none';
+      if (btns[i].getAttribute('data-val') === STATE.words[STATE.wi].chinese) {
+        btns[i].classList.add('right-btn');
+      } else if (btns[i].getAttribute('data-val') === chosen && chosen !== STATE.words[STATE.wi].chinese) {
+        btns[i].classList.add('wrong-btn');
+      } else {
+        btns[i].classList.add('dim-btn');
+      }
+    }
+
+    var w = STATE.words[STATE.wi];
+    var inner = document.getElementById('quizInner');
+
+    if (chosen === w.chinese) {
+      STATE.done++;
+      STATE.totalDone++;
+      STATE.xp += 10;
+      STATE.mem[w.id] = Math.min((STATE.mem[w.id] || 0) + 1, 5);
+      STATE.stations[STATE.station].done = true;
+      STATE.vy = -14;
+      document.getElementById('xpNum').textContent = STATE.xp;
+      inner.classList.add('correct');
+      speak('Correct! ' + w.word + '. ' + w.chinese);
+      save();
+      setTimeout(function() {
+        STATE.wi++;
+        if (STATE.wi >= STATE.words.length) {
+          stationDone();
+        } else {
+          renderQuiz();
+        }
+      }, 800);
+    } else {
+      STATE.mem[w.id] = 0;
+      inner.classList.add('wrong');
+      speak('Try again. ' + w.word + '.');
+      save();
+      setTimeout(renderQuiz, 1300);
+    }
+  }
+
+  function stationDone() {
+    document.getElementById('quizModal').style.display = 'none';
+    STATE.station++;
+    if (STATE.station >= STATION_N) {
+      var today = new Date().toDateString();
+      var yesterday = new Date(Date.now() - 86400000).toDateString();
+      STATE.streak = (STATE.last === yesterday) ? STATE.streak + 1 : 1;
+      STATE.last = today;
+      STATE.phase = 'win';
+      document.getElementById('winStation').textContent = STATION_N;
+      document.getElementById('winStats').textContent = STATE.totalDone + '词 · ' + STATE.streak + '天连续打卡 🔥';
+      document.getElementById('winModal').style.display = 'flex';
+    } else {
+      STATE.stations[STATE.station].current = true;
+      STATE.tx = STATE.stations[STATE.station].x;
+      STATE.phase = 'map';
+    }
+    save();
+  }
+
+  document.getElementById('winRestart').addEventListener('click', function() {
+    document.getElementById('winModal').style.display = 'none';
+    if (STATE.station >= STATION_N) {
+      STATE.station = 0;
+      for (var i = 0; i < STATE.stations.length; i++) {
+        STATE.stations[i].done = false;
+        STATE.stations[i].current = i === 0;
+      }
+      STATE.tx = STATE.stations[0].x;
+    }
+    STATE.phase = 'map';
+  });
+
+  document.getElementById('qSpeak').addEventListener('click', function() {
+    var w = STATE.words[STATE.wi];
+    if (w) speak(w.word + '. ' + w.sentence);
+  });
+
+  function jumpStation(idx) {
+    STATE.station = idx;
+    for (var i = 0; i < STATE.stations.length; i++) {
+      STATE.stations[i].done = i < STATE.station;
+      STATE.stations[i].current = i === STATE.station;
+    }
+    STATE.tx = STATE.stations[STATE.station].x;
+    STATE.cx = STATE.tx;
+    STATE.phase = 'map';
+  }
+
+  // ---- BOOT ----
+  window.addEventListener('resize', function() { resize(); buildStations(); });
+  window.addEventListener('load', function() {
+    resize(); load(); buildStations(); loop();
+  });
+})();
+</script>
+</body>
+</html>
