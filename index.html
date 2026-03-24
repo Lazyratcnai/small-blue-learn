@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>小蓝学 - 背单词</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { 
+  height: 100%; 
+  overflow: hidden; 
+  touch-action: manipulation;
+}
+body {
+  font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  background: #1a1a2e;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.app { 
+  position: relative; 
+  width: 100%; 
+  height: 100vh; 
+  overflow: hidden;
+}
+canvas { 
+  display: block; 
+  width: 100%; 
+  height: 100%; 
+}
+
+/* HUD */
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 5;
+  pointer-events: none;
+}
+.hud-title {
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #2d5a2d;
+  box-shadow: 3px 3px 0 #1a3a1a;
+  border: 3px solid #4a8a4a;
+}
+.hud-right {
+  background: rgba(255,255,255,0.95);
+  border-radius: 12px;
+  padding: 8px 16px;
+  border: 3px solid #4a8a4a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hud-right .n { font-size: 18px; font-weight: 900; color: #e74c3c; }
+.hud-right .l { font-size: 11px; color: #666; font-weight: 700; }
+
+/* Pixel quiz modal */
+.quiz-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 16px;
+}
+.quiz-inner {
+  background: #fef9ec;
+  border-radius: 8px;
+  padding: 28px 24px 24px;
+  width: 100%;
+  max-width: 420px;
+  border: 5px solid #2d5a2d;
+  box-shadow: 8px 8px 0 #1a3a1a;
+  image-rendering: pixelated;
+  animation: modalIn 0.15s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+@keyframes modalIn { from { transform: scale(0.92); } to { transform: scale(1); } }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  60% { transform: translateX(8px); }
+}
+.quiz-inner.wrong { animation: shake 0.35s ease; }
+.quiz-inner.correct { background: #e8f9ed; }
+
+.q-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.q-cat {
+  background: #c8e6c9;
+  color: #2d5a2d;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 900;
+  display: inline-block;
+  border: 2px solid #4a8a4a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.q-close {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e74c3c;
+  border: 3px solid #c0392b;
+  color: white;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 0 #922b3e;
+  -webkit-tap-highlight-color: transparent;
+}
+.q-close:active { transform: scale(0.95); }
+
+.q-word-wrap { 
+  position: relative; 
+  display: inline-block; 
+  margin-bottom: 8px;
+  width: 100%;
+}
+.q-word {
+  font-size: 48px;
+  font-weight: 900;
+  color: #1a1a2e;
+  line-height: 1.2;
+  font-family: "Courier New", monospace;
+  text-shadow: 3px 3px 0 #aaa;
+  word-break: break-all;
+}
+.q-speak {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #3498db;
+  border: 3px solid #2980b9;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+  box-shadow: 3px 3px 0 #1a5276;
+  -webkit-tap-highlight-color: transparent;
+}
+.q-speak:active { transform: translateY(-50%) scale(0.95); }
+
+.q-chinese {
+  font-size: 22px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.q-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.q-opt {
+  padding: 18px 12px;
+  min-height: 64px;
+  background: white;
+  border: 3px solid #ddd;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-all;
+  line-height: 1.3;
+  box-shadow: 0 4px 0 #bbb;
+  -webkit-tap-highlight-color: transparent;
+}
+.q-opt:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #bbb;
+}
+.q-opt.correct {
+  background: #27ae60;
+  border-color: #1e8449;
+  color: white;
+  box-shadow: 0 4px 0 #145a32;
+}
+.q-opt.wrong {
+  background: #e74c3c;
+  border-color: #c0392b;
+  color: white;
+  box-shadow: 0 4px 0 #922b3e;
+}
+
+.q-progress {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  font-weight: 600;
+}
+
+/* Win modal */
+.win-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  padding: 20px;
+}
+.win-inner {
+  background: linear-gradient(180deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 16px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: 5px solid #e17055;
+  box-shadow: 8px 8px 0 #d35400;
+  animation: modalIn 0.2s ease;
+}
+.win-icon { font-size: 64px; margin-bottom: 16px; }
+.win-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #d35400;
+  margin-bottom: 12px;
+  text-shadow: 2px 2px 0 #fff;
+}
+.win-station {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 8px;
+}
+.win-stats {
+  font-size: 20px;
+  font-weight: 800;
+  color: #e74c3c;
+  margin-bottom: 24px;
+}
+.win-btn {
+  padding: 16px 40px;
+  background: #27ae60;
+  border: 4px solid #1e8449;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #145a32;
+  -webkit-tap-highlight-color: transparent;
+}
+.win-btn:active { transform: translateY(3px); box-shadow: 1px 1px 0 #145a32; }
+
+/* Footer hint */
+.footer-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.9);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  border: 2px solid #ddd;
+  z-index: 4;
+}
+
+/* Loading */
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 100;
+}
+.loading-text {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 16px;
+}
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top-color: #4a8a4a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .q-word { font-size: 36px; }
+  .q-opt { font-size: 16px; padding: 14px 10px; min-height: 56px; }
+  .hud-title { font-size: 14px; padding: 6px 12px; }
+  .hud-right .n { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">小蓝学loading...</div>
+  </div>
+  
+  <div class="hud">
+    <div class="hud-title">小蓝学 · 背单词</div>
+    <div class="hud-right">
+      <div class="n" id="progressText">0/120</div>
+      <div class="l">今日进度</div>
+    </div>
+  </div>
+  
+  <canvas id="map"></canvas>
+  
+  <div class="footer-hint" id="hint">点击关卡开始学习</div>
+</div>
+
+<!-- Quiz Modal -->
+<div class="quiz-modal" id="quizModal">
+  <div class="quiz-inner" id="quizInner">
+    <div class="q-header">
+      <div class="q-cat" id="qCat">CATEGORY</div>
+      <button class="q-close" id="qClose">✕</button>
+    </div>
+    <div class="q-word-wrap">
+      <div class="q-word" id="qWord">WORD</div>
+      <button class="q-speak" id="qSpeak">🔊</button>
+    </div>
+    <div class="q-chinese" id="qChinese">中文释义</div>
+    <div class="q-options" id="qOptions"></div>
+    <div class="q-progress" id="qProgress">1/5</div>
+  </div>
+</div>
+
+<!-- Win Modal -->
+<div class="win-modal" id="winModal">
+  <div class="win-inner">
+    <div class="win-icon">🎉</div>
+    <div class="win-title">本关完成！</div>
+    <div class="win-station">第 <span id="winStation">1</span> 关</div>
+    <div class="win-stats" id="winStats">0词 · 0天连续打卡</div>
+    <button class="win-btn" id="winRestart">继续加油 💪</button>
+  </div>
+</div>
+
+<script>
+// ==================== GAME CONFIG ====================
+var CONFIG = {
+  WORDS_PER_STATION: 5,
+  TOTAL_STATIONS: 24, // 120词 / 5 = 24关
+  COLORS: {
+    sky: '#5dade2',
+    grass: '#58d68d',
+    road: '#f4d03f',
+    player: '#e74c3c',
+    flag: '#27ae60',
+    coin: '#f39c12',
+    stationDone: '#27ae60',
+    stationCurrent: '#f39c12',
+    stationLocked: '#95a5a6'
+  }
+};
+
+// ==================== DATA ====================
+var WORDS = [
+  {id: 1, category: "学习用品", word: "pen", chinese: "钢笔", phonetic: "pen", context: "I have a pen.", sentence: "This is my blue pen."},
+  {id: 2, category: "学习用品", word: "pencil", chinese: "铅笔", phonetic: "'pensl", context: "I have a pencil.", sentence: "My pencil is very long."},
+  {id: 3, category: "学习用品", word: "eraser", chinese: "橡皮", phonetic: "i'reizə", context: "I have an eraser.", sentence: "The eraser is pink."},
+  {id: 4, category: "学习用品", word: "ruler", chinese: "尺子", phonetic: "'ru:lə", context: "I have a ruler.", sentence: "My ruler is 20 centimeters."},
+  {id: 5, category: "学习用品", word: "bag", chinese: "包", phonetic: "bæg", context: "I have a bag.", sentence: "This is my school bag."},
+  {id: 6, category: "学习用品", word: "book", chinese: "书", phonetic: "buk", context: "I have a book.", sentence: "I like this story book."},
+  {id: 7, category: "学习用品", word: "school", chinese: "学校", phonetic: "sku:l", context: "I go to school.", sentence: "My school is very big."},
+  {id: 8, category: "学习用品", word: "class", chinese: "班级", phonetic: "klɑ:s", context: "I am in Class 3.", sentence: "We are in the same class."},
+  {id: 9, category: "学习用品", word: "desk", chinese: "课桌", phonetic: "desk", context: "This is my desk.", sentence: "There is a book on my desk."},
+  {id: 10, category: "学习用品", word: "chair", chinese: "椅子", phonetic: "tʃeə", context: "This is my chair.", sentence: "I sit on a chair."},
+  {id: 11, category: "身体", word: "head", chinese: "头", phonetic: "hed", context: "This is my head.", sentence: "I have a round head."},
+  {id: 12, category: "身体", word: "face", chinese: "脸", phonetic: "feis", context: "This is my face.", sentence: "My face is round."},
+  {id: 13, category: "身体", word: "eye", chinese: "眼睛", phonetic: "ai", context: "These are my eyes.", sentence: "I have two big eyes."},
+  {id: 14, category: "身体", word: "nose", chinese: "鼻子", phonetic: "nəuz", context: "This is my nose.", sentence: "My nose is small."},
+  {id: 15, category: "身体", word: "mouth", chinese: "嘴巴", phonetic: "mauθ", context: "This is my mouth.", sentence: "Open your mouth."},
+  {id: 16, category: "身体", word: "ear", chinese: "耳朵", phonetic: "iə", context: "These are my ears.", sentence: "I can hear with my ears."},
+  {id: 17, category: "身体", word: "hand", chinese: "手", phonetic: "hænd", context: "This is my hand.", sentence: "I raise my hand."},
+  {id: 18, category: "身体", word: "arm", chinese: "手臂", phonetic: "ɑ:m", context: "This is my arm.", sentence: "I wave my arm."},
+  {id: 19, category: "身体", word: "leg", chinese: "腿", phonetic: "leg", context: "This is my leg.", sentence: "I have long legs."},
+  {id: 20, category: "身体", word: "foot", chinese: "脚", phonetic: "fut", context: "This is my foot.", sentence: "I wash my foot every day."},
+  {id: 21, category: "颜色", word: "red", chinese: "红色", phonetic: "red", context: "The apple is red.", sentence: "I like the red color."},
+  {id: 22, category: "颜色", word: "blue", chinese: "蓝色", phonetic: "blu:", context: "The sky is blue.", sentence: "I have a blue bag."},
+  {id: 23, category: "颜色", word: "yellow", chinese: "黄色", phonetic: "'jeləu", context: "The banana is yellow.", sentence: "The yellow sun is bright."},
+  {id: 24, category: "颜色", word: "green", chinese: "绿色", phonetic: "gri:n", context: "The grass is green.", sentence: "I like green tea."},
+  {id: 25, category: "颜色", word: "white", chinese: "白色", phonetic: "wait", context: "The snow is white.", sentence: "I wear a white shirt."},
+  {id: 26, category: "颜色", word: "black", chinese: "黑色", phonetic: "blæk", context: "The cat is black.", sentence: "I have black hair."},
+  {id: 27, category: "颜色", word: "orange", chinese: "橙色", phonetic: "'orindʒ", context: "The orange is orange.", sentence: "I drink orange juice."},
+  {id: 28, category: "颜色", word: "pink", chinese: "粉色", phonetic: "piŋk", context: "The flower is pink.", sentence: "I like pink colors."},
+  {id: 29, category: "动物", word: "cat", chinese: "猫", phonetic: "kæt", context: "I have a cat.", sentence: "The cat is sleeping."},
+  {id: 30, category: "动物", word: "dog", chinese: "狗", phonetic: "dɔg", context: "I have a dog.", sentence: "The dog is running."},
+  {id: 31, category: "动物", word: "bird", chinese: "鸟", phonetic: "bə:d", context: "I see a bird.", sentence: "The bird is flying."},
+  {id: 32, category: "动物", word: "fish", chinese: "鱼", phonetic: "fiʃ", context: "I have a fish.", sentence: "The fish is swimming."},
+  {id: 33, category: "动物", word: "rabbit", chinese: "兔子", phonetic: "'ræbit", context: "I have a rabbit.", sentence: "The rabbit is jumping."},
+  {id: 34, category: "动物", word: "panda", chinese: "熊猫", phonetic: "'pændə", context: "I like pandas.", sentence: "The panda is eating bamboo."},
+  {id: 35, category: "动物", word: "monkey", chinese: "猴子", phonetic: "'mʌŋki", context: "I see a monkey.", sentence: "The monkey is climbing."},
+  {id: 36, category: "动物", word: "bear", chinese: "熊", phonetic: "beə", context: "I see a bear.", sentence: "The bear is very big."},
+  {id: 37, category: "数字", word: "one", chinese: "一", phonetic: "wʌn", context: "I have one apple.", sentence: "One plus one is two."},
+  {id: 38, category: "数字", word: "two", chinese: "二", phonetic: "tu:", context: "I have two apples.", sentence: "Two and two is four."},
+  {id: 39, category: "数字", word: "three", chinese: "三", phonetic: "θri:", context: "I have three books.", sentence: "Three times three is nine."},
+  {id: 40, category: "数字", word: "four", chinese: "四", phonetic: "fɔ:", context: "I have four pencils.", sentence: "Four and four is eight."},
+  {id: 41, category: "数字", word: "five", chinese: "五", phonetic: "faiv", context: "I have five fingers.", sentence: "Five and five is ten."},
+  {id: 42, category: "数字", word: "six", chinese: "六", phonetic: "siks", context: "I am six years old.", sentence: "Six times six is thirty-six."},
+  {id: 43, category: "数字", word: "seven", chinese: "七", phonetic: "'sevn", context: "I have seven stars.", sentence: "Seven is my lucky number."},
+  {id: 44, category: "数字", word: "eight", chinese: "八", phonetic: "eit", context: "I have eight coins.", sentence: "Eight and two is ten."},
+  {id: 45, category: "数字", word: "nine", chinese: "九", phonetic: "nain", context: "I have nine balloons.", sentence: "Nine times nine is eighty-one."},
+  {id: 46, category: "数字", word: "ten", chinese: "十", phonetic: "ten", context: "I have ten books.", sentence: "Ten minus three is seven."},
+  {id: 47, category: "家庭", word: "father", chinese: "爸爸", phonetic: "'fa:ðə", context: "He is my father.", sentence: "My father is tall."},
+  {id: 48, category: "家庭", word: "mother", chinese: "妈妈", phonetic: "'mʌðə", context: "She is my mother.", sentence: "My mother is kind."},
+  {id: 49, category: "家庭", word: "brother", chinese: "哥哥/弟弟", phonetic: "'brʌðə", context: "He is my brother.", sentence: "I have a brother."},
+  {id: 50, category: "家庭", word: "sister", chinese: "姐姐/妹妹", phonetic: "'sistə", context: "She is my sister.", sentence: "My sister is cute."},
+  {id: 51, category: "家庭", word: "grandfather", chinese: "爷爷/外公", phonetic: "'grændfa:ðə", context: "He is my grandfather.", sentence: "My grandfather is old."},
+  {id: 52, category: "家庭", word: "grandmother", chinese: "奶奶/外婆", phonetic: "'grændmʌðə", context: "She is my grandmother.", sentence: "My grandmother cooks well."},
+  {id: 53, category: "家庭", word: "family", chinese: "家庭", phonetic: "'fæməli", context: "This is my family.", sentence: "I love my family."},
+  {id: 54, category: "家庭", word: "baby", chinese: "宝宝", phonetic: "'beibi", context: "This is a baby.", sentence: "The baby is sleeping."},
+  {id: 55, category: "家庭", word: "friend", chinese: "朋友", phonetic: "frend", context: "She is my friend.", sentence: "We are good friends."},
+  {id: 56, category: "家庭", word: "teacher", chinese: "老师", phonetic: "'ti:tʃə", context: "She is my teacher.", sentence: "My teacher is nice."},
+  {id: 57, category: "食物", word: "apple", chinese: "苹果", phonetic: "'æpl", context: "I like apples.", sentence: "The apple is red and sweet."},
+  {id: 58, category: "食物", word: "banana", chinese: "香蕉", phonetic: "bə'na:nə", context: "I like bananas.", sentence: "The banana is yellow."},
+  {id: 59, category: "食物", word: "orange", chinese: "橙子", phonetic: "'orindʒ", context: "I like oranges.", sentence: "The orange is juicy."},
+  {id: 60, category: "食物", word: "rice", chinese: "米饭", phonetic: "rais", context: "I eat rice.", sentence: "I have rice for lunch."},
+  {id: 61, category: "食物", word: "bread", chinese: "面包", phonetic: "bred", context: "I eat bread.", sentence: "I have bread for breakfast."},
+  {id: 62, category: "食物", word: "milk", chinese: "牛奶", phonetic: "milk", context: "I drink milk.", sentence: "Milk is good for health."},
+  {id: 63, category: "食物", word: "egg", chinese: "鸡蛋", phonetic: "eg", context: "I eat an egg.", sentence: "I have an egg every morning."},
+  {id: 64, category: "食物", word: "water", chinese: "水", phonetic: "'wɔ:tə", context: "I drink water.", sentence: "Water is very important."},
+  {id: 65, category: "食物", word: "cake", chinese: "蛋糕", phonetic: "keik", context: "I eat cake.", sentence: "I have a birthday cake."},
+  {id: 66, category: "食物", word: "chicken", chinese: "鸡肉", phonetic: "'tʃikin", context: "I eat chicken.", sentence: "I like fried chicken."},
+  {id: 67, category: "动作", word: "run", chinese: "跑", phonetic: "rʌn", context: "I can run.", sentence: "I run every morning."},
+  {id: 68, category: "动作", word: "walk", chinese: "走", phonetic: "wɔ:k", context: "I walk to school.", sentence: "I walk to school every day."},
+  {id: 69, category: "动作", word: "jump", chinese: "跳", phonetic: "dʒʌmp", context: "I can jump.", sentence: "The frog can jump."},
+  {id: 70, category: "动作", word: "swim", chinese: "游泳", phonetic: "swim", context: "I can swim.", sentence: "I swim in summer."},
+  {id: 71, category: "动作", word: "fly", chinese: "飞", phonetic: "flai", context: "Birds can fly.", sentence: "The bird flies in the sky."},
+  {id: 72, category: "动作", word: "eat", chinese: "吃", phonetic: "i:t", context: "I eat breakfast.", sentence: "I eat three meals a day."},
+  {id: 73, category: "动作", word: "drink", chinese: "喝", phonetic: "drɪŋk", context: "I drink water.", sentence: "I drink milk every day."},
+  {id: 74, category: "动作", word: "read", chinese: "读", phonetic: "ri:d", context: "I read books.", sentence: "I read a story book."},
+  {id: 75, category: "动作", word: "write", chinese: "写", phonetic: "rait", context: "I write letters.", sentence: "I write with a pencil."},
+  {id: 76, category: "动作", word: "play", chinese: "玩", phonetic: "plei", context: "I play games.", sentence: "I play with my friends."},
+  {id: 77, category: "学校", word: "classroom", chinese: "教室", phonetic: "'klɑ:sru:m", context: "This is my classroom.", sentence: "Our classroom is big."},
+  {id: 78, category: "学校", word: "library", chinese: "图书馆", phonetic: "'laibrəri", context: "I go to the library.", sentence: "I read books in the library."},
+  {id: 79, category: "学校", word: "playground", chinese: "操场", phonetic: "'pleigraund", context: "We play on the playground.", sentence: "The playground is fun."},
+  {id: 80, category: "学校", word: "student", chinese: "学生", phonetic: "'stju:dnt", context: "I am a student.", sentence: "I am a good student."},
+  {id: 81, category: "学校", word: "lesson", chinese: "课", phonetic: "'lesn", context: "We have four lessons.", sentence: "I like the English lesson."},
+  {id: 82, category: "学校", word: "homework", chinese: "作业", phonetic: "'həumwə:k", context: "I do homework.", sentence: "I finish my homework."},
+  {id: 83, category: "学校", word: "test", chinese: "测试", phonetic: "test", context: "We have a test.", sentence: "The test is easy."},
+  {id: 84, category: "学校", word: "picture", chinese: "图片", phonetic: "'piktʃə", context: "I draw a picture.", sentence: "This is a beautiful picture."},
+  {id: 85, category: "位置", word: "in", chinese: "在...里面", phonetic: "in", context: "The cat is in the box.", sentence: "The book is in my bag."},
+  {id: 86, category: "位置", word: "on", chinese: "在...上面", phonetic: "ɔn", context: "The book is on the desk.", sentence: "The cat is on the chair."},
+  {id: 87, category: "位置", word: "under", chinese: "在...下面", phonetic: "'ʌndə", context: "The cat is under the table.", sentence: "The ball is under the bed."},
+  {id: 88, category: "位置", word: "near", chinese: "在...附近", phonetic: "niə", context: "The school is near my home.", sentence: "I sit near the window."},
+  {id: 89, category: "位置", word: "behind", chinese: "在...后面", phonetic: "bi'haind", context: "The tree is behind the house.", sentence: "The cat is behind the door."},
+  {id: 90, category: "位置", word: "front", chinese: "在...前面", phonetic: "frʌnt", context: "I stand in front of the class.", sentence: "The teacher is in front of the class."},
+  {id: 91, category: "时间", word: "morning", chinese: "早上", phonetic: "'mɔ:niŋ", context: "I get up in the morning.", sentence: "Good morning!"},
+  {id: 92, category: "时间", word: "afternoon", chinese: "下午", phonetic: "'ɑ:ftə'nu:n", context: "I play in the afternoon.", sentence: "I have lunch in the afternoon."},
+  {id: 93, category: "时间", word: "evening", chinese: "晚上", phonetic: "'i:vniŋ", context: "I watch TV in the evening.", sentence: "Good evening!"},
+  {id: 94, category: "时间", word: "today", chinese: "今天", phonetic: "tə'dei", context: "Today is Monday.", sentence: "Today is my birthday."},
+  {id: 95, category: "时间", word: "tomorrow", chinese: "明天", phonetic: "tə'mɔrəu", context: "Tomorrow is Tuesday.", sentence: "Tomorrow I will go to school."},
+  {id: 96, category: "时间", word: "yesterday", chinese: "昨天", phonetic: "'jestədei", context: "Yesterday was Sunday.", sentence: "I played games yesterday."},
+  {id: 97, category: "时间", word: "week", chinese: "周", phonetic: "wi:k", context: "There are seven days in a week.", sentence: "I go to school every week."},
+  {id: 98, category: "时间", word: "day", chinese: "天", phonetic: "dei", context: "There are 24 hours in a day.", sentence: "I study every day."},
+  {id: 99, category: "天气", word: "sunny", chinese: "晴天", phonetic: "'sʌni", context: "It is sunny today.", sentence: "I like sunny days."},
+  {id: 100, category: "天气", word: "rainy", chinese: "雨天", phonetic: "'reini", context: "It is rainy today.", sentence: "I stay home on rainy days."},
+  {id: 101, category: "天气", word: "cloudy", chinese: "多云", phonetic: "'klaudi", context: "It is cloudy today.", sentence: "The sky is cloudy."},
+  {id: 102, category: "天气", word: "windy", chinese: "大风", phonetic: "'windi", context: "It is windy today.", sentence: "The wind is strong."},
+  {id: 103, category: "形容词", word: "big", chinese: "大的", phonetic: "big", context: "The elephant is big.", sentence: "I have a big family."},
+  {id: 104, category: "形容词", word: "small", chinese: "小的", phonetic: "smɔ:l", context: "The mouse is small.", sentence: "The apple is small."},
+  {id: 105, category: "形容词", word: "tall", chinese: "高的", phonetic: "tɔ:l", context: "The giraffe is tall.", sentence: "My father is tall."},
+  {id: 106, category: "形容词", word: "short", chinese: "矮的", phonetic: "ʃɔ:t", context: "The boy is short.", sentence: "The pencil is short."},
+  {id: 107, category: "形容词", word: "new", chinese: "新的", phonetic: "nju:", context: "I have a new book.", sentence: "This is my new school."},
+  {id: 108, category: "形容词", word: "old", chinese: "旧的", phonetic: "əuld", context: "I have an old bike.", sentence: "My grandfather is old."},
+  {id: 109, category: "形容词", word: "good", chinese: "好的", phonetic: "gud", context: "He is a good student.", sentence: "This is a good book."},
+  {id: 110, category: "形容词", word: "bad", chinese: "坏的", phonetic: "bæd", context: "The apple is bad.", sentence: "This is a bad idea."},
+  {id: 111, category: "形容词", word: "happy", chinese: "开心的", phonetic: "'hæpi", context: "I am happy.", sentence: "I feel very happy today."},
+  {id: 112, category: "形容词", word: "sad", chinese: "伤心的", phonetic: "sæd", context: "The girl is sad.", sentence: "I don't feel sad."},
+  {id: 113, category: "交通工具", word: "car", chinese: "汽车", phonetic: "kɑ:", context: "My father has a car.", sentence: "The car is very fast."},
+  {id: 114, category: "交通工具", word: "bus", chinese: "公共汽车", phonetic: "bʌs", context: "I take a bus.", sentence: "The bus is coming."},
+  {id: 115, category: "交通工具", word: "bike", chinese: "自行车", phonetic: "baik", context: "I have a bike.", sentence: "I ride a bike to school."},
+  {id: 116, category: "交通工具", word: "plane", chinese: "飞机", phonetic: "plein", context: "I take a plane.", sentence: "The plane is in the sky."},
+  {id: 117, category: "交通工具", word: "train", chinese: "火车", phonetic: "trein", context: "I take a train.", sentence: "The train is very fast."},
+  {id: 118, category: "交通工具", word: "ship", chinese: "船", phonetic: "ʃip", context: "I take a ship.", sentence: "The ship is on the sea."},
+  {id: 119, category: "水果", word: "grape", chinese: "葡萄", phonetic: "greip", context: "I like grapes.", sentence: "Grapes are sweet."},
+  {id: 120, category: "水果", word: "watermelon", chinese: "西瓜", phonetic: "'wɔ:təmelən", context: "I like watermelon.", sentence: "Watermelon is cool in summer."}
+];
+
+var CATEGORIES = [...new Set(WORDS.map(function(w) { return w.category; }))];
+
+// ==================== GAME STATE ====================
+(function() {
+  var canvas = document.getElementById('map');
+  var ctx = canvas.getContext('2d');
+  var W, H, S;
+  
+  var STATE = {
+    phase: 'map', // map, quiz
+    station: 0,
+    stations: [],
+    words: [],
+    wi: 0,
+    correct: 0,
+    mem: {}, // word id -> correct count
+    totalDone: 0,
+    streak: 0,
+    last: '',
+    tx: 0,
+    cx: 0
+  };
+  
+  // Generate station data
+  var STATION_N = Math.ceil(WORDS.length / CONFIG.WORDS_PER_STATION);
+  
+  function buildStations() {
+    STATE.stations = [];
+    var gw = W * 0.08;
+    var gh = H * 0.06;
+    var gapX = W * 0.18;
+    var startX = W * 0.15;
+    var rowY = H * 0.35;
+    var row2Y = H * 0.65;
+    
+    for (var i = 0; i < STATION_N; i++) {
+      var row = i < 12 ? 0 : 1;
+      var col = i < 12 ? i : i - 12;
+      var x = startX + col * gapX;
+      var y = row === 0 ? rowY : row2Y;
+      // Alternating heights for zigzag
+      if (row === 1) y += (col % 2) * (H * 0.08);
+      
+      STATE.stations.push({
+        x: x,
+        y: y,
+        w: gw,
+        h: gh,
+        done: i < STATE.station,
+        current: i === STATE.station,
+        label: i + 1
+      });
+    }
+  }
+  
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    S = Math.min(W, H) * 0.012;
+    canvas.width = W;
+    canvas.height = H;
+    buildStations();
+  }
+  
+  function load() {
+    try {
+      var saved = localStorage.getItem('smallblue_v2');
+      if (saved) {
+        var data = JSON.parse(saved);
+        STATE.station = data.station || 0;
+        STATE.mem = data.mem || {};
+        STATE.totalDone = data.totalDone || 0;
+        STATE.streak = data.streak || 0;
+        STATE.last = data.last || '';
+        // Recalculate totalDone from mem
+        STATE.totalDone = Object.keys(STATE.mem).filter(function(k) { return STATE.mem[k] > 0; }).length;
+      }
+    } catch (e) {
+      console.error('Load error:', e);
+    }
+    STATE.tx = STATE.stations[STATE.station] ? STATE.stations[STATE.station].x : 0;
+    STATE.cx = STATE.tx;
+    
+    // Hide loading
+    document.getElementById('loading').style.display = 'none';
+    updateProgress();
+  }
+  
+  function save() {
+    try {
+      localStorage.setItem('smallblue_v2', JSON.stringify({
+        station: STATE.station,
+        mem: STATE.mem,
+        totalDone: STATE.totalDone,
+        streak: STATE.streak,
+        last: STATE.last
+      }));
+    } catch (e) {
+      console.error('Save error:', e);
+    }
+  }
+  
+  function updateProgress() {
+    document.getElementById('progressText').textContent = STATE.totalDone + '/' + WORDS.length;
+  }
+  
+  function speak(text) {
+    if ('speechSynthesis' in window) {
+      var utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = 0.85;
+      speechSynthesis.speak(utter);
+    }
+  }
+  
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  
+  // ==================== RENDER ====================
+  function render() {
+    ctx.fillStyle = CONFIG.COLORS.sky;
+    ctx.fillRect(0, 0, W, H);
+    
+    // Ground
+    ctx.fillStyle = CONFIG.COLORS.grass;
+    ctx.fillRect(0, H * 0.28, W, H * 0.72);
+    
+    // Road
+    ctx.fillStyle = CONFIG.COLORS.road;
+    ctx.fillRect(0, H * 0.32, W, H * 0.12);
+    
+    // Stations
+    STATE.stations.forEach(function(st, i) {
+      var color = st.done ? CONFIG.COLORS.stationDone : (st.current ? CONFIG.COLORS.stationCurrent : CONFIG.COLORS.stationLocked);
+      ctx.fillStyle = color;
+      // Rounded rect
+      var r = 8;
+      ctx.beginPath();
+      ctx.roundRect(st.x - st.w/2, st.y - st.h/2, st.w, st.h, r);
+      ctx.fill();
+      
+      // Border
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      // Label
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold ' + Math.max(14, st.w * 0.4) + 'px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(st.label, st.x, st.y);
+      
+      // Star for done
+      if (st.done) {
+        ctx.font = Math.max(12, st.w * 0.3) + 'px Arial';
+        ctx.fillText('⭐', st.x + st.w * 0.35, st.y - st.h * 0.35);
+      }
+    });
+    
+    // Player
+    var px = STATE.cx;
+    var py = H * 0.31;
+    var playerSize = S * 2.5;
+    
+    ctx.fillStyle = CONFIG.COLORS.player;
+    ctx.fillRect(px - playerSize/2, py - playerSize, playerSize, playerSize);
+    
+    // Eyes
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(px - playerSize*0.25, py - playerSize*0.8, playerSize*0.2, playerSize*0.2);
+    ctx.fillRect(px + playerSize*0.05, py - playerSize*0.8, playerSize*0.2, playerSize*0.2);
+    
+    // Flag at end
+    var flagX = STATE.stations[STATE.stations.length - 1].x;
+    var flagY = H * 0.26;
+    ctx.fillStyle = '#888';
+    ctx.fillRect(flagX - 3, flagY - S*4, 6, S*4);
+    ctx.fillStyle = CONFIG.COLORS.flag;
+    ctx.beginPath();
+    ctx.moveTo(flagX + 3, flagY - S*4);
+    ctx.lineTo(flagX + S*2.5, flagY - S*3);
+    ctx.lineTo(flagX + 3, flagY - S*2);
+    ctx.fill();
+  }
+  
+  function loop() {
+    // Smooth scroll to player
+    var targetX = STATE.tx - W / 2;
+    STATE.cx += (targetX - STATE.cx) * 0.1;
+    
+    render();
+    requestAnimationFrame(loop);
+  }
+  
+  // ==================== QUIZ ====================
+  function renderQuiz() {
+    var startIdx = STATE.station * CONFIG.WORDS_PER_STATION;
+    var endIdx = Math.min(startIdx + CONFIG.WORDS_PER_STATION, WORDS.length);
+    STATE.words = WORDS.slice(startIdx, endIdx);
+    
+    // Find next unwinned word
+    while (STATE.wi < STATE.words.length && STATE.mem[STATE.words[STATE.wi].id] >= 3) {
+      STATE.wi++;
+    }
+    
+    if (STATE.wi >= STATE.words.length) {
+      stationDone();
+      return;
+    }
+    
+    var w = STATE.words[STATE.wi];
+    document.getElementById('qCat').textContent = w.category;
+    document.getElementById('qWord').textContent = w.word;
+    document.getElementById('qChinese').textContent = w.chinese;
+    document.getElementById('qProgress').textContent = (STATE.wi + 1) + '/' + STATE.words.length;
+    
+    // Options
+    var opts = [w.word];
+    var others = shuffle(WORDS.filter(function(x) { return x.id !== w.id; }).map(function(x) { return x.word; }));
+    opts = opts.concat(others.slice(0, 3));
+    opts = shuffle(opts);
+    
+    var optsEl = document.getElementById('qOptions');
+    optsEl.innerHTML = '';
+    opts.forEach(function(opt) {
+      var btn = document.createElement('div');
+      btn.className = 'q-opt';
+      btn.textContent = opt;
+      btn.addEventListener('click', function() { checkAnswer(opt, w.word, btn); });
+      optsEl.appendChild(btn);
+    });
+    
+    // Auto speak
+    setTimeout(function() { speak(w.word); }, 300);
+  }
+  
+  function checkAnswer(selected, correct, btn) {
+    var inner = document.getElementById('quizInner');
+    inner.classList.remove('wrong', 'correct');
+    
+    if (selected === correct) {
+      btn.classList.add('correct');
+      STATE.mem[w.id] = (STATE.mem[w.id] || 0) + 1;
+      if (STATE.mem[w.id] === 1) STATE.totalDone++;
+      save();
+      updateProgress();
+      
+      speak('Correct! ' + w.word);
+      inner.classList.add('correct');
+      
+      setTimeout(function() {
+        STATE.wi++;
+        if (STATE.wi >= STATE.words.length) {
+          stationDone();
+        } else {
+          renderQuiz();
+        }
+      }, 800);
+    } else {
+      btn.classList.add('wrong');
+      STATE.mem[w.id] = 0;
+      save();
+      speak('Try again. ' + w.word);
+      inner.classList.add('wrong');
+      setTimeout(function() {
+        inner.classList.remove('wrong');
+        renderQuiz();
+      }, 1300);
+    }
+  }
+  
+  function stationDone() {
+    document.getElementById('quizModal').style.display = 'none';
+    STATE.station++;
+    
+    if (STATE.station >= STATION_N) {
+      var today = new Date().toDateString();
+      var yesterday = new Date(Date.now() - 86400000).toDateString();
+      STATE.streak = (STATE.last === yesterday) ? STATE.streak + 1 : 1;
+      STATE.last = today;
+      STATE.phase = 'win';
+      document.getElementById('winStation').textContent = STATION_N;
+      document.getElementById('winStats').textContent = STATE.totalDone + '词 · ' + STATE.streak + '天连续打卡 🔥';
+      document.getElementById('winModal').style.display = 'flex';
+    } else {
+      STATE.stations[STATE.station].current = true;
+      STATE.stations[STATE.station].done = true;
+      STATE.tx = STATE.stations[STATE.station].x;
+      STATE.cx = STATE.tx;
+      STATE.phase = 'map';
+    }
+    save();
+  }
+  
+  // ==================== EVENTS ====================
+  // Click station
+  canvas.addEventListener('click', function(e) {
+    if (STATE.phase !== 'map') return;
+    
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    
+    STATE.stations.forEach(function(st, i) {
+      if (i <= STATE.station && 
+          x >= st.x - st.w/2 && x <= st.x + st.w/2 &&
+          y >= st.y - st.h/2 && y <= st.y + st.h/2) {
+        // Jump or start
+        STATE.wi = 0;
+        STATE.phase = 'quiz';
+        document.getElementById('quizModal').style.display = 'flex';
+        renderQuiz();
+      }
+    });
+  });
+  
+  // Touch support for mobile
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (STATE.phase !== 'map') return;
+    
+    var rect = canvas.getBoundingClientRect();
+    var touch = e.touches[0];
+    var x = touch.clientX - rect.left;
+    var y = touch.clientY - rect.top;
+    
+    STATE.stations.forEach(function(st, i) {
+      if (i <= STATE.station && 
+          x >= st.x - st.w/2 && x <= st.x + st.w/2 &&
+          y >= st.y - st.h/2 && y <= st.y + st.h/2) {
+        STATE.wi = 0;
+        STATE.phase = 'quiz';
+        document.getElementById('quizModal').style.display = 'flex';
+        renderQuiz();
+      }
+    });
+  }, { passive: false });
+  
+  // Win modal
+  document.getElementById('winRestart').addEventListener('click', function() {
+    document.getElementById('winModal').style.display = 'none';
+    if (STATE.station >= STATION_N) {
+      STATE.station = 0;
+      for (var i = 0; i < STATE.stations.length; i++) {
+        STATE.stations[i].done = false;
+        STATE.stations[i].current = i === 0;
+      }
+      STATE.tx = STATE.stations[0].x;
+      STATE.cx = STATE.tx;
+    }
+    STATE.phase = 'map';
+  });
+  
+  // Quiz controls
+  document.getElementById('qSpeak').addEventListener('click', function(e) {
+    e.stopPropagation();
+    var w = STATE.words[STATE.wi];
+    if (w) speak(w.word + '. ' + w.sentence);
+  });
+  
+  document.getElementById('qClose').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('quizModal').style.display = 'none';
+    STATE.phase = 'map';
+  });
+  
+  document.getElementById('quizModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.style.display = 'none';
+      STATE.phase = 'map';
+    }
+  });
+  
+  // ==================== BOOT ====================
+  window.addEventListener('resize', function() { 
+    resize(); 
+  });
+  
+  window.addEventListener('load', function() {
+    resize();
+    load();
+    buildStations();
+    loop();
+  });
+})();
+</script>
+</body>
+</html>
