@@ -569,9 +569,10 @@
             wordsPerLevel: 20,   // 每关单词数（实际使用词库数据）
             questionTypes: 5,   // 每关题型数
             reviewRatio: 0.2,   // 错题混入比例
-            cosBucket: 'mario-1258221587',
-            cosRegion: 'ap-shanghai',
-            cosPath: 'small-blue-learn/users/'
+            // COS配置（后续开发时从环境变量或配置服务获取，不暴露在前端）
+            cosBucket: '',
+            cosRegion: '',
+            cosPath: ''
         };
         
         // 关卡数据（从words.js获取）
