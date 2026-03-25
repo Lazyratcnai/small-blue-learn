@@ -160,6 +160,17 @@
             transform: translateY(0);
         }
         
+        .btn-secondary {
+            background: rgba(255,255,255,0.9);
+            color: #6B5BFF;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+        
         /* 用户选择界面 */
         .user-select {
             display: none;
@@ -690,6 +701,299 @@
             from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        
+        /* 页面内容区域 */
+        .page-header {
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+        
+        .page-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .page-desc {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* 错题本 */
+        .wrong-list {
+            padding: 0 15px;
+        }
+        
+        .wrong-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .wrong-word {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .wrong-en {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .wrong-cn {
+            font-size: 14px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .wrong-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .wrong-empty {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .wrong-empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        /* 背包 */
+        .bag-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 0 15px;
+        }
+        
+        .bag-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .bag-item-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .bag-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .bag-item-count {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+        
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-hint {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+        
+        /* 成就 */
+        .achievement-list {
+            padding: 0 15px;
+        }
+        
+        .achievement-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.5;
+        }
+        
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFD93D, #FF6B9D);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .achievement-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .achievement-status {
+            font-size: 14px;
+            color: var(--success);
+        }
+        
+        .achievement-item.locked .achievement-status {
+            color: #ccc;
+        }
+        
+        /* 战斗系统 */
+        .battle-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+        
+        .monster {
+            text-align: center;
+        }
+        
+        .monster-icon {
+            font-size: 40px;
+            display: block;
+            animation: monsterFloat 2s ease-in-out infinite;
+        }
+        
+        @keyframes monsterFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .monster-hp-bar {
+            width: 80px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin: 5px auto;
+            overflow: hidden;
+        }
+        
+        .monster-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .monster-name {
+            color: white;
+            font-size: 12px;
+        }
+        
+        .battle-effect {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .battle-effect.attack {
+            animation: attackAnim 0.5s ease-out;
+        }
+        
+        .battle-effect.damage {
+            animation: damageAnim 0.5s ease-out;
+        }
+        
+        @keyframes attackAnim {
+            0% { opacity: 1; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(2); }
+        }
+        
+        @keyframes damageAnim {
+            0% { opacity: 1; transform: translateX(0); }
+            25% { opacity: 1; transform: translateX(-10px); }
+            50% { opacity: 1; transform: translateX(10px); }
+            75% { opacity: 1; transform: translateX(-10px); }
+            100% { opacity: 0; transform: translateX(0); }
+        }
+        
+        .monster.hit {
+            animation: monsterHit 0.3s ease-out;
+        }
+        
+        @keyframes monsterHit {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.8); filter: brightness(2); }
+        }
+        
+        /* 魔法卡 */
+        .magic-cards {
+            display: flex;
+            gap: 8px;
+            margin: 0 15px;
+        }
+        
+        .magic-card {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD93D, #FF6B9D);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .magic-card:active {
+            transform: scale(0.9);
+        }
+        
+        .magic-card.used {
+            opacity: 0.3;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -706,7 +1010,7 @@
                     <label>请输入你的名字</label>
                     <input type="text" id="userName" placeholder="比如：Joe" maxlength="10">
                 </div>
-                <button class="btn btn-primary" onclick="startGame()">开始冒险 ✨</button>
+                <button class="btn btn-primary" id="startGameBtn" onclick="handleStartGame()">开始冒险 ✨</button>
             </div>
         </div>
         
@@ -721,6 +1025,10 @@
                 <!-- 用户列表 -->
             </div>
             <button class="btn btn-primary" style="margin-top: 30px; max-width: 200px;" onclick="showLogin()">+ 添加新角色</button>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-secondary" style="flex: 1; padding: 12px;" onclick="syncToCloud()">☁️ 上传存档</button>
+                <button class="btn btn-secondary" style="flex: 1; padding: 12px;" onclick="restoreFromCloud()">☁️ 下载存档</button>
+            </div>
         </div>
         
         <!-- 主界面 -->
@@ -733,32 +1041,100 @@
                 <div class="stats">
                     <div class="stat-item">⭐ <span id="totalStars">0</span></div>
                     <div class="stat-item">💎 <span id="totalGems">0</span></div>
+                    <div style="margin-left: 10px;">
+                        <button onclick="syncToCloud()" style="background: rgba(255,255,255,0.3); border: none; border-radius: 8px; padding: 5px 10px; cursor: pointer; font-size: 12px;" title="上传到云端">☁️</button>
+                    </div>
                 </div>
             </div>
             
             <div class="content">
-                <div class="map-container">
-                    <div class="map-title">🌟 魔法关卡</div>
-                    <div class="level-grid" id="levelGrid">
-                        <!-- 关卡节点 -->
+                <!-- 主页 - 关卡地图 -->
+                <div class="page-content" id="pageHome">
+                    <div class="map-container">
+                        <div class="map-title">🌟 魔法关卡</div>
+                        <div class="level-grid" id="levelGrid">
+                            <!-- 关卡节点 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 古诗词页面 -->
+                <div class="page-content" id="pagePoetry" style="display: none;">
+                    <div class="map-container">
+                        <div class="map-title">📜 古诗词乐园</div>
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            <div style="font-size: 60px; margin-bottom: 20px;">🏗️</div>
+                            <div style="background: rgba(255,255,255,0.9); border-radius: 20px; padding: 30px; margin: 20px;">
+                                <h3 style="color: #6B5BFF; margin-bottom: 15px;">即将推出</h3>
+                                <p style="color: #666; line-height: 1.8;">
+                                    古诗词闯关模块正在开发中...<br>
+                                    敬请期待！🎉
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 错题本 -->
+                <div class="page-content" id="pageWrongBook" style="display: none;">
+                    <div class="page-header">
+                        <h2>📚 错题本</h2>
+                        <p class="page-desc">这些单词需要多加练习哦</p>
+                    </div>
+                    <div class="wrong-list" id="wrongList">
+                        <!-- 错题列表 -->
+                    </div>
+                </div>
+                
+                <!-- 背包 -->
+                <div class="page-content" id="pageBag" style="display: none;">
+                    <div class="page-header">
+                        <h2>🎒 背包</h2>
+                        <p class="page-desc">收集的魔法道具</p>
+                    </div>
+                    <div class="bag-grid" id="bagGrid">
+                        <!-- 背包物品 -->
+                    </div>
+                    <div class="empty-state" id="bagEmpty">
+                        <div class="empty-icon">📦</div>
+                        <p>背包空空如也~</p>
+                        <p class="empty-hint">通关关卡可以获得道具</p>
+                    </div>
+                </div>
+                
+                <!-- 成就 -->
+                <div class="page-content" id="pageAchievements" style="display: none;">
+                    <div class="page-header">
+                        <h2>🏆 成就</h2>
+                        <p class="page-desc">收集徽章， 成为魔法大师</p>
+                    </div>
+                    <div style="padding: 0 15px; margin-bottom: 15px;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="sendWeeklyReport()">📊 生成学习报告</button>
+                    </div>
+                    <div class="achievement-list" id="achievementList">
+                        <!-- 成就列表 -->
                     </div>
                 </div>
             </div>
             
             <div class="bottom-nav">
-                <div class="nav-item active">
+                <div class="nav-item active" data-page="home">
                     <span class="nav-icon">🏠</span>
                     <span>主页</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" data-page="poetry">
+                    <span class="nav-icon">📜</span>
+                    <span>古诗</span>
+                </div>
+                <div class="nav-item" data-page="wrongbook">
                     <span class="nav-icon">📚</span>
                     <span>错题本</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" data-page="bag">
                     <span class="nav-icon">🎒</span>
                     <span>背包</span>
                 </div>
-                <div class="nav-item">
+                <div class="nav-item" data-page="achievements">
                     <span class="nav-icon">🏆</span>
                     <span>成就</span>
                 </div>
@@ -778,6 +1154,17 @@
                 <div class="game-stats">
                     <span>⭐ <span id="gameStars">0</span></span>
                     <span class="hp-display">❤️ <span id="gameHP">3</span></span>
+                </div>
+                <!-- 战斗区域 -->
+                <div class="battle-area" id="battleArea">
+                    <div class="monster" id="monster">
+                        <span class="monster-icon" id="monsterIcon">👾</span>
+                        <div class="monster-hp-bar">
+                            <div class="monster-hp-fill" id="monsterHpFill" style="width: 100%;"></div>
+                        </div>
+                        <span class="monster-name" id="monsterName">小怪物</span>
+                    </div>
+                    <div class="battle-effect" id="battleEffect"></div>
                 </div>
             </div>
             
@@ -814,6 +1201,14 @@
             <!-- 底部操作 -->
             <div class="game-footer">
                 <button class="btn btn-secondary" onclick="quitGame()">退出</button>
+                
+                <!-- 魔法卡区域 -->
+                <div class="magic-cards" id="magicCards">
+                    <div class="magic-card" onclick="useMagicCard('hint')" title="提示">💡</div>
+                    <div class="magic-card" onclick="useMagicCard('shield')" title="护盾">🛡️</div>
+                    <div class="magic-card" onclick="useMagicCard('attack')" title="攻击">⚔️</div>
+                </div>
+                
                 <div class="game-timer" id="gameTimer">⏱️ 00:00</div>
             </div>
         </div>
@@ -827,8 +1222,544 @@
         <div class="toast" id="toast"></div>
     </div>
     
-    <script src="words.js"></script>
     <script>
+        // ==================== 词库数据 ====================
+        // 小蓝学词库 - 人教版3-5年级英语单词
+        const WORDS = {
+  "3a": [
+    { en: "ruler", cn: "直尺" },
+    { en: "pencil", cn: "铅笔" },
+    { en: "eraser", cn: "橡皮擦" },
+    { en: "crayon", cn: "蜡笔" },
+    { en: "bag", cn: "包" },
+    { en: "pen", cn: "钢笔" },
+    { en: "pencil box", cn: "铅笔盒" },
+    { en: "book", cn: "书" },
+    { en: "red", cn: "红色的" },
+    { en: "green", cn: "绿色的" },
+    { en: "yellow", cn: "黄色的" },
+    { en: "blue", cn: "蓝色的" },
+    { en: "black", cn: "黑色的" },
+    { en: "brown", cn: "棕色的" },
+    { en: "white", cn: "白色的" },
+    { en: "orange", cn: "橙色的" },
+    { en: "face", cn: "脸" },
+    { en: "ear", cn: "耳朵" },
+    { en: "eye", cn: "眼睛" },
+    { en: "nose", cn: "鼻子" },
+    { en: "mouth", cn: "嘴" },
+    { en: "arm", cn: "胳膊" },
+    { en: "hand", cn: "手" },
+    { en: "head", cn: "头" },
+    { en: "body", cn: "身体" },
+    { en: "leg", cn: "腿" },
+    { en: "foot", cn: "脚" },
+    { en: "duck", cn: "鸭子" },
+    { en: "pig", cn: "猪" },
+    { en: "cat", cn: "猫" },
+    { en: "bear", cn: "熊" },
+    { en: "dog", cn: "狗" },
+    { en: "elephant", cn: "大象" },
+    { en: "monkey", cn: "猴子" },
+    { en: "bird", cn: "鸟" },
+    { en: "tiger", cn: "老虎" },
+    { en: "panda", cn: "熊猫" },
+    { en: "zoo", cn: "动物园" },
+    { en: "bread", cn: "面包" },
+    { en: "juice", cn: "果汁" },
+    { en: "egg", cn: "蛋" },
+    { en: "milk", cn: "牛奶" },
+    { en: "water", cn: "水" },
+    { en: "cake", cn: "蛋糕" },
+    { en: "fish", cn: "鱼" },
+    { en: "rice", cn: "米饭" },
+    { en: "one", cn: "一" },
+    { en: "two", cn: "二" },
+    { en: "three", cn: "三" },
+    { en: "four", cn: "四" },
+    { en: "five", cn: "五" },
+    { en: "six", cn: "六" },
+    { en: "seven", cn: "七" },
+    { en: "eight", cn: "八" },
+    { en: "nine", cn: "九" },
+    { en: "ten", cn: "十" }
+  ],
+  "3b": [
+    { en: "UK", cn: "英国" },
+    { en: "USA", cn: "美国" },
+    { en: "China", cn: "中国" },
+    { en: "Canada", cn: "加拿大" },
+    { en: "student", cn: "学生" },
+    { en: "pupil", cn: "小学生" },
+    { en: "teacher", cn: "教师" },
+    { en: "she", cn: "她" },
+    { en: "he", cn: "他" },
+    { en: "boy", cn: "男孩" },
+    { en: "girl", cn: "女孩" },
+    { en: "new", cn: "新的" },
+    { en: "friend", cn: "朋友" },
+    { en: "today", cn: "今天" },
+    { en: "father", cn: "父亲" },
+    { en: "dad", cn: "爸爸" },
+    { en: "man", cn: "男人" },
+    { en: "woman", cn: "女人" },
+    { en: "mother", cn: "母亲" },
+    { en: "mum", cn: "妈妈" },
+    { en: "sister", cn: "姐/妹" },
+    { en: "brother", cn: "兄/弟" },
+    { en: "grandmother", cn: "（外）祖母" },
+    { en: "grandma", cn: "奶奶/外婆" },
+    { en: "grandfather", cn: "（外）祖父" },
+    { en: "grandpa", cn: "爷爷/外公" },
+    { en: "family", cn: "家" },
+    { en: "thin", cn: "瘦的" },
+    { en: "fat", cn: "胖的" },
+    { en: "tall", cn: "高的" },
+    { en: "short", cn: "矮的" },
+    { en: "long", cn: "长的" },
+    { en: "small", cn: "小的" },
+    { en: "big", cn: "大的" },
+    { en: "giraffe", cn: "长颈鹿" },
+    { en: "so", cn: "这么" },
+    { en: "children", cn: "儿童" },
+    { en: "tail", cn: "尾巴" },
+    { en: "on", cn: "在…上" },
+    { en: "in", cn: "在…里" },
+    { en: "under", cn: "在…下面" },
+    { en: "chair", cn: "椅子" },
+    { en: "desk", cn: "书桌" },
+    { en: "cap", cn: "帽子" },
+    { en: "ball", cn: "球" },
+    { en: "car", cn: "小汽车" },
+    { en: "boat", cn: "小船" },
+    { en: "map", cn: "地图" },
+    { en: "toy", cn: "玩具" },
+    { en: "box", cn: "盒子" },
+    { en: "pear", cn: "梨" },
+    { en: "apple", cn: "苹果" },
+    { en: "banana", cn: "香蕉" },
+    { en: "watermelon", cn: "西瓜" },
+    { en: "strawberry", cn: "草莓" },
+    { en: "grape", cn: "葡萄" },
+    { en: "buy", cn: "买" },
+    { en: "fruit", cn: "水果" },
+    { en: "eleven", cn: "十一" },
+    { en: "twelve", cn: "十二" },
+    { en: "thirteen", cn: "十三" },
+    { en: "fourteen", cn: "十四" },
+    { en: "fifteen", cn: "十五" },
+    { en: "sixteen", cn: "十六" },
+    { en: "seventeen", cn: "十七" },
+    { en: "eighteen", cn: "十八" },
+    { en: "nineteen", cn: "十九" },
+    { en: "twenty", cn: "二十" },
+    { en: "kite", cn: "风筝" },
+    { en: "beautiful", cn: "美丽的" }
+  ],
+  "4a": [
+    { en: "classroom", cn: "教室" },
+    { en: "window", cn: "窗户" },
+    { en: "blackboard", cn: "黑板" },
+    { en: "light", cn: "电灯" },
+    { en: "picture", cn: "图画" },
+    { en: "door", cn: "门" },
+    { en: "teacher's desk", cn: "讲台" },
+    { en: "computer", cn: "电脑" },
+    { en: "fan", cn: "风扇" },
+    { en: "wall", cn: "墙" },
+    { en: "floor", cn: "地板" },
+    { en: "schoolbag", cn: "书包" },
+    { en: "maths book", cn: "数学书" },
+    { en: "English book", cn: "英语书" },
+    { en: "Chinese book", cn: "语文书" },
+    { en: "storybook", cn: "故事书" },
+    { en: "notebook", cn: "笔记本" },
+    { en: "candy", cn: "糖果" },
+    { en: "strong", cn: "强壮的" },
+    { en: "friendly", cn: "友好的" },
+    { en: "quiet", cn: "安静的" },
+    { en: "hair", cn: "头发" },
+    { en: "shoe", cn: "鞋" },
+    { en: "glasses", cn: "眼镜" },
+    { en: "his", cn: "他的" },
+    { en: "or", cn: "或者" },
+    { en: "right", cn: "正确的" },
+    { en: "hat", cn: "帽子" },
+    { en: "her", cn: "她的" },
+    { en: "bedroom", cn: "卧室" },
+    { en: "living room", cn: "起居室" },
+    { en: "study", cn: "书房" },
+    { en: "kitchen", cn: "厨房" },
+    { en: "bathroom", cn: "浴室" },
+    { en: "bed", cn: "床" },
+    { en: "phone", cn: "电话" },
+    { en: "table", cn: "桌子" },
+    { en: "sofa", cn: "沙发" },
+    { en: "fridge", cn: "冰箱" },
+    { en: "beef", cn: "牛肉" },
+    { en: "chicken", cn: "鸡肉" },
+    { en: "noodles", cn: "面条" },
+    { en: "soup", cn: "汤" },
+    { en: "vegetable", cn: "蔬菜" },
+    { en: "chopsticks", cn: "筷子" },
+    { en: "bowl", cn: "碗" },
+    { en: "fork", cn: "叉子" },
+    { en: "knife", cn: "刀" },
+    { en: "spoon", cn: "勺子" },
+    { en: "dinner", cn: "晚餐" },
+    { en: "parents", cn: "父母" },
+    { en: "cousin", cn: "堂/表兄弟姊妹" },
+    { en: "uncle", cn: "叔/伯/舅/姨父" },
+    { en: "aunt", cn: "姑/姨/婶" },
+    { en: "baby brother", cn: "婴儿弟弟" },
+    { en: "doctor", cn: "医生" },
+    { en: "cook", cn: "厨师" },
+    { en: "driver", cn: "司机" },
+    { en: "farmer", cn: "农民" },
+    { en: "nurse", cn: "护士" },
+    { en: "people", cn: "人们" },
+    { en: "but", cn: "但是" },
+    { en: "little", cn: "小的" },
+    { en: "puppy", cn: "小狗" },
+    { en: "football player", cn: "足球运动员" },
+    { en: "job", cn: "工作" },
+    { en: "basketball", cn: "篮球" }
+  ],
+  "4b": [
+    { en: "first floor", cn: "一楼" },
+    { en: "second floor", cn: "二楼" },
+    { en: "teacher's office", cn: "教师办公室" },
+    { en: "library", cn: "图书馆" },
+    { en: "playground", cn: "操场" },
+    { en: "computer room", cn: "计算机房" },
+    { en: "art room", cn: "美术教室" },
+    { en: "music room", cn: "音乐教室" },
+    { en: "breakfast", cn: "早餐" },
+    { en: "English class", cn: "英语课" },
+    { en: "lunch", cn: "午餐" },
+    { en: "music class", cn: "音乐课" },
+    { en: "PE class", cn: "体育课" },
+    { en: "cold", cn: "寒冷的" },
+    { en: "cool", cn: "凉爽的" },
+    { en: "warm", cn: "温暖的" },
+    { en: "hot", cn: "热的" },
+    { en: "sunny", cn: "阳光充足的" },
+    { en: "windy", cn: "有风的" },
+    { en: "cloudy", cn: "多云的" },
+    { en: "snowy", cn: "下雪的" },
+    { en: "rainy", cn: "下雨的" },
+    { en: "tomato", cn: "西红柿" },
+    { en: "potato", cn: "土豆" },
+    { en: "green beans", cn: "豆角" },
+    { en: "carrot", cn: "胡萝卜" },
+    { en: "horse", cn: "马" },
+    { en: "cow", cn: "奶牛" },
+    { en: "sheep", cn: "羊" },
+    { en: "hen", cn: "母鸡" },
+    { en: "clothes", cn: "衣服" },
+    { en: "pants", cn: "裤子" },
+    { en: "dress", cn: "连衣裙" },
+    { en: "skirt", cn: "裙子" },
+    { en: "coat", cn: "外衣" },
+    { en: "sweater", cn: "毛衣" },
+    { en: "sock", cn: "袜子" },
+    { en: "shorts", cn: "短裤" },
+    { en: "jacket", cn: "夹克" },
+    { en: "shirt", cn: "衬衫" },
+    { en: "glove", cn: "手套" },
+    { en: "scarf", cn: "围巾" },
+    { en: "umbrella", cn: "雨伞" },
+    { en: "sunglasses", cn: "太阳镜" },
+    { en: "pretty", cn: "漂亮的" },
+    { en: "expensive", cn: "昂贵的" },
+    { en: "cheap", cn: "便宜的" },
+    { en: "nice", cn: "好的" }
+  ],
+  "5a": [
+    { en: "old", cn: "年老的" },
+    { en: "young", cn: "年轻的" },
+    { en: "funny", cn: "滑稽可笑的" },
+    { en: "kind", cn: "和蔼的" },
+    { en: "strict", cn: "严格的" },
+    { en: "polite", cn: "有礼貌的" },
+    { en: "hard-working", cn: "努力工作的" },
+    { en: "helpful", cn: "有帮助的" },
+    { en: "clever", cn: "聪明的" },
+    { en: "shy", cn: "害羞的" },
+    { en: "Monday", cn: "星期一" },
+    { en: "Tuesday", cn: "星期二" },
+    { en: "Wednesday", cn: "星期三" },
+    { en: "Thursday", cn: "星期四" },
+    { en: "Friday", cn: "星期五" },
+    { en: "Saturday", cn: "星期六" },
+    { en: "Sunday", cn: "星期天" },
+    { en: "weekend", cn: "周末" },
+    { en: "wash", cn: "洗" },
+    { en: "watch", cn: "看" },
+    { en: "do", cn: "做" },
+    { en: "homework", cn: "作业" },
+    { en: "read", cn: "读" },
+    { en: "play", cn: "玩" },
+    { en: "sandwich", cn: "三明治" },
+    { en: "salad", cn: "沙拉" },
+    { en: "hamburger", cn: "汉堡包" },
+    { en: "ice cream", cn: "冰淇淋" },
+    { en: "tea", cn: "茶" },
+    { en: "fresh", cn: "新鲜的" },
+    { en: "healthy", cn: "健康的" },
+    { en: "delicious", cn: "美味的" },
+    { en: "sweet", cn: "甜的" },
+    { en: "sing", cn: "唱" },
+    { en: "song", cn: "歌曲" },
+    { en: "dance", cn: "跳舞" },
+    { en: "draw", cn: "画" },
+    { en: "swim", cn: "游泳" },
+    { en: "play basketball", cn: "打篮球" },
+    { en: "play ping-pong", cn: "打乒乓球" },
+    { en: "speak English", cn: "说英语" },
+    { en: "play the pipa", cn: "弹琵琶" },
+    { en: "Kung fu", cn: "功夫" },
+    { en: "draw cartoons", cn: "画漫画" },
+    { en: "read books", cn: "看书" },
+    { en: "clock", cn: "时钟" },
+    { en: "plant", cn: "植物" },
+    { en: "bottle", cn: "瓶子" },
+    { en: "water bottle", cn: "水瓶" },
+    { en: "bike", cn: "自行车" },
+    { en: "photo", cn: "照片" },
+    { en: "front", cn: "正面" },
+    { en: "in front of", cn: "在…前面" },
+    { en: "between", cn: "在…之间" },
+    { en: "above", cn: "在…上面" },
+    { en: "beside", cn: "在…旁边" },
+    { en: "behind", cn: "在…后面" },
+    { en: "forest", cn: "森林" },
+    { en: "river", cn: "河流" },
+    { en: "lake", cn: "湖泊" },
+    { en: "mountain", cn: "高山" },
+    { en: "hill", cn: "小山" },
+    { en: "tree", cn: "树" },
+    { en: "bridge", cn: "桥" },
+    { en: "building", cn: "建筑物" },
+    { en: "village", cn: "乡村" },
+    { en: "house", cn: "房子" }
+  ],
+  "5b": [
+    { en: "eat breakfast", cn: "吃早饭" },
+    { en: "have class", cn: "上课" },
+    { en: "play sports", cn: "进行体育运动" },
+    { en: "exercise", cn: "活动" },
+    { en: "do morning exercises", cn: "早锻炼" },
+    { en: "eat dinner", cn: "吃晚饭" },
+    { en: "clean my room", cn: "打扫房间" },
+    { en: "go for a walk", cn: "散步" },
+    { en: "go shopping", cn: "购物" },
+    { en: "take", cn: "上（课）" },
+    { en: "dancing", cn: "跳舞" },
+    { en: "take a dancing class", cn: "上舞蹈课" },
+    { en: "spring", cn: "春天" },
+    { en: "summer", cn: "夏天" },
+    { en: "autumn", cn: "秋天" },
+    { en: "winter", cn: "冬天" },
+    { en: "season", cn: "季节" },
+    { en: "picnic", cn: "野餐" },
+    { en: "go on a picnic", cn: "去野餐" },
+    { en: "pick", cn: "摘" },
+    { en: "pick apples", cn: "摘苹果" },
+    { en: "snowman", cn: "雪人" },
+    { en: "make a snowman", cn: "堆雪人" },
+    { en: "go swimming", cn: "去游泳" },
+    { en: "January", cn: "一月" },
+    { en: "February", cn: "二月" },
+    { en: "March", cn: "三月" },
+    { en: "April", cn: "四月" },
+    { en: "May", cn: "五月" },
+    { en: "June", cn: "六月" },
+    { en: "July", cn: "七月" },
+    { en: "August", cn: "八月" },
+    { en: "September", cn: "九月" },
+    { en: "October", cn: "十月" },
+    { en: "November", cn: "十一月" },
+    { en: "December", cn: "十二月" },
+    { en: "first", cn: "第一" },
+    { en: "second", cn: "第二" },
+    { en: "third", cn: "第三" },
+    { en: "fourth", cn: "第四" },
+    { en: "fifth", cn: "第五" },
+    { en: "twelfth", cn: "第十二" },
+    { en: "twentieth", cn: "第二十" },
+    { en: "twenty-first", cn: "第二十一" },
+    { en: "twenty-third", cn: "第二十三" },
+    { en: "thirtieth", cn: "第三十" },
+    { en: "mine", cn: "我的" },
+    { en: "yours", cn: "你的" },
+    { en: "his", cn: "他的" },
+    { en: "hers", cn: "她的" },
+    { en: "theirs", cn: "他们的" },
+    { en: "ours", cn: "我们的" },
+    { en: "climbing", cn: "攀登" },
+    { en: "eating", cn: "吃" },
+    { en: "playing", cn: "玩耍" },
+    { en: "jumping", cn: "跳" },
+    { en: "drinking", cn: "喝" },
+    { en: "sleeping", cn: "睡觉" },
+    { en: "doing morning exercises", cn: "早锻炼" },
+    { en: "having class", cn: "上课" },
+    { en: "eating lunch", cn: "吃午饭" },
+    { en: "reading a book", cn: "看书" },
+    { en: "listening to music", cn: "听音乐" },
+    { en: "keep", cn: "保持" },
+    { en: "keep to the right", cn: "靠右" },
+    { en: "keep your desk clean", cn: "保持课桌整洁" },
+    { en: "talk quietly", cn: "小声讲话" },
+    { en: "turn", cn: "顺序" },
+    { en: "take turns", cn: "按顺序来" }
+  ]
+};
+
+        // 关卡配置
+        const LEVELS = [
+          { id: 1, name: "魔法入门", words: "3a", range: [0, 17] },
+          { id: 2, name: "颜色魔法", words: "3a", range: [18, 35] },
+          { id: 3, name: "动物伙伴", words: "3a", range: [36, 57] },
+          { id: 4, name: "数字咒语", words: "3a", range: [58, 67] },
+          { id: 5, name: "新朋友", words: "3b", range: [0, 15] },
+          { id: 6, name: "魔法家庭", words: "3b", range: [16, 28] },
+          { id: 7, name: "变身魔法", words: "3b", range: [29, 40] },
+          { id: 8, name: "魔法空间", words: "3b", range: [41, 52] },
+          { id: 9, name: "水果盛宴", words: "3b", range: [53, 61] },
+          { id: 10, name: "进阶数字", words: "3b", range: [62, 72] },
+          { id: 11, name: "魔法教室", words: "4a", range: [0, 10] },
+          { id: 12, name: "文具宝箱", words: "4a", range: [11, 19] },
+          { id: 13, name: "变形术", words: "4a", range: [20, 31] },
+          { id: 14, name: "魔法房间", words: "4a", range: [32, 41] },
+          { id: 15, name: "美食魔法", words: "4a", range: [42, 52] },
+          { id: 16, name: "职业魔法", words: "4a", range: [53, 70] },
+          { id: 17, name: "魔法城堡", words: "4b", range: [0, 7] },
+          { id: 18, name: "天气咒语", words: "4b", range: [8, 16] },
+          { id: 19, name: "自然魔法", words: "4b", range: [17, 24] },
+          { id: 20, name: "服装魔法", words: "4b", range: [25, 36] },
+          { id: 21, name: "特性魔法", words: "5a", range: [0, 9] },
+          { id: 22, name: "时间魔法", words: "5a", range: [10, 23] },
+          { id: 23, name: "美味魔法", words: "5a", range: [24, 33] },
+          { id: 24, name: "技能魔法", words: "5a", range: [34, 47] },
+          { id: 25, name: "物品魔法", words: "5a", range: [48, 59] },
+          { id: 26, name: "地点魔法", words: "5a", range: [60, 69] },
+          { id: 27, name: "日常魔法", words: "5b", range: [0, 13] },
+          { id: 28, name: "四季魔法", words: "5b", range: [14, 25] },
+          { id: 29, name: "月份魔法", words: "5b", range: [26, 37] },
+          { id: 30, name: "顺序魔法", words: "5b", range: [38, 47] },
+          { id: 31, name: "物主魔法", words: "5b", range: [48, 59] },
+          { id: 32, name: "规则魔法", words: "5b", range: [60, 71] }
+        ];
+
+        // 获取关卡单词
+        function getLevelWords(levelId) {
+          const level = LEVELS.find(l => l.id === levelId);
+          if (!level) return [];
+          const wordList = WORDS[level.words];
+          if (!wordList) return [];
+          return wordList.slice(level.range[0], level.range[1] + 1);
+        }
+    </script>
+    <script>
+        // 云同步功能（暂时禁用，等环境准备好再开启）
+        window.cloudSyncEnabled = false;
+    </script>
+    <script>
+        // ==================== 音效系统 ====================
+        
+        // 音效开关
+        let soundEnabled = true;
+        
+        // 使用Web Audio API生成音效
+        function playSoundEffect(type) {
+            if (!soundEnabled) return;
+            
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                switch(type) {
+                    case 'correct':
+                        // 正确 - 上升音调
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                        oscillator.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                        oscillator.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.3);
+                        break;
+                        
+                    case 'wrong':
+                        // 错误 - 下降音调
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+                        oscillator.frequency.setValueAtTime(300, audioCtx.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(200, audioCtx.currentTime + 0.2);
+                        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.3);
+                        break;
+                        
+                    case 'attack':
+                        // 攻击 - 快速音效
+                        oscillator.type = 'square';
+                        oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
+                        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.15);
+                        break;
+                        
+                    case 'victory':
+                        // 胜利 - 欢快旋律
+                        oscillator.type = 'sine';
+                        const notes = [523.25, 659.25, 783.99, 1046.50];
+                        notes.forEach((freq, i) => {
+                            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15);
+                        });
+                        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.6);
+                        break;
+                        
+                    case 'click':
+                        // 点击音效
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.1);
+                        break;
+                }
+            } catch (e) {
+                console.log('音效播放失败:', e);
+            }
+        }
+        
+        // ==================== 全局点击音效 ====================
+        
+        // 页面加载后给所有按钮添加点击音效
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON' || e.target.classList.contains('magic-card') || 
+                    e.target.classList.contains('option-btn') || e.target.classList.contains('user-card')) {
+                    playSoundEffect('click');
+                }
+            }, true);
+        });
+
         // ==================== 数据系统 ====================
         
         // 游戏数据存储key
@@ -840,14 +1771,21 @@
             wordsPerLevel: 20,   // 每关单词数（实际使用词库数据）
             questionTypes: 5,   // 每关题型数
             reviewRatio: 0.2,   // 错题混入比例
-            // COS配置（后续开发时从环境变量或配置服务获取，不暴露在前端）
-            cosBucket: '',
-            cosRegion: '',
-            cosPath: ''
+            // 腾讯云COS配置
+            cosBucket: 'mario-1258221587',
+            cosRegion: 'ap-shanghai',
+            cosPath: 'small-blue-learn/',
+            // COS密钥（注意：前端使用有安全风险，仅供个人使用）
+            cosSecretId: 'AKID0t8QZVCpR1Vu7ABD6vb4JJB2mT0JTXP4',
+            cosSecretKey: 'UMC730zvhR2RdnogN4e1Nl15vnfQxMbf'
         };
         
-        // 关卡数据（从words.js获取）
-        const GAME_LEVELS = typeof LEVELS !== 'undefined' ? LEVELS : [];
+        // 关卡数据（已内联）
+        let GAME_LEVELS = LEVELS;
+        console.log('词库已加载，关卡数:', GAME_LEVELS.length);
+        
+        // 直接初始化
+        init();
         
         // 题型定义
         const QUESTION_TYPES = [
@@ -856,6 +1794,24 @@
             { id: 'listen', name: '听力选择', icon: '🔊' },
             { id: 'match', name: '连连看', icon: '🔗' },
             { id: 'fill', name: '填空题', icon: '✏️' }
+        ];
+        
+        // ==================== 古诗词系统 ====================
+        
+        // 古诗词数据结构
+        const POEMS = [
+            { id: 1, title: '静夜思', author: '李白', dynasty: '唐', content: '床前明月光，疑是地上霜。举头望明月，低头思故乡。' },
+            { id: 2, title: '春晓', author: '孟浩然', dynasty: '唐', content: '春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。' },
+            { id: 3, title: '登鹳雀楼', author: '王之涣', dynasty: '唐', content: '白日依山尽，黄河入海流。欲穷千里目，更上一层楼。' },
+            { id: 4, title: '相思', author: '王维', dynasty: '唐', content: '红豆生南国，春来发几枝。愿君多采撷，此物最相思。' },
+            { id: 5, title: '鹿柴', author: '王维', dynasty: '唐', content: '空山不见人，但闻人语响。返景入深林，复照青苔上。' }
+        ];
+        
+        // 古诗词题型定义
+        const POEM_QUESTION_TYPES = [
+            { id: 'poem2author', name: '作者是谁', icon: '👤' },
+            { id: 'poem2title', name: '题目是什么', icon: '📝' },
+            { id: 'poemFill', name: '诗句填空', icon: '✏️' }
         ];
         
         // 游戏状态
@@ -888,6 +1844,220 @@
             }
         }
         
+        // ==================== COS云端同步 ====================
+        
+        // 初始化COS客户端
+        let cosClient = null;
+        function getCosClient() {
+            if (typeof COS === 'undefined') {
+                console.log('COS SDK未加载');
+                return null;
+            }
+            if (!cosClient) {
+                cosClient = new COS({
+                    SecretId: CONFIG.cosSecretId,
+                    SecretKey: CONFIG.cosSecretKey
+                });
+            }
+            return cosClient;
+        }
+        
+        // 上传数据到云端
+        function uploadToCloud(userId, callback) {
+            const cos = getCosClient();
+            if (!cos) {
+                showToast('☁️ 云服务不可用');
+                if (callback) callback(false);
+                return;
+            }
+            const cloudKey = CONFIG.cosPath + 'user_' + userId + '_data.json';
+            const dataStr = JSON.stringify(gameState);
+            
+            cos.putObject({
+                Bucket: CONFIG.cosBucket,
+                Region: CONFIG.cosRegion,
+                Key: cloudKey,
+                Body: dataStr,
+                ContentType: 'application/json'
+            }, function(err, data) {
+                if (err) {
+                    console.error('上传失败:', err);
+                    showToast('☁️ 云同步失败');
+                    if (callback) callback(false);
+                } else {
+                    console.log('上传成功:', data);
+                    showToast('☁️ 已保存到云端');
+                    if (callback) callback(true);
+                }
+            });
+        }
+        
+        // 从云端下载数据
+        function downloadFromCloud(userId, callback) {
+            const cos = getCosClient();
+            if (!cos) {
+                showToast('☁️ 云服务不可用');
+                if (callback) callback(null);
+                return;
+            }
+            const cloudKey = CONFIG.cosPath + 'user_' + userId + '_data.json';
+            
+            cos.getObject({
+                Bucket: CONFIG.cosBucket,
+                Region: CONFIG.cosRegion,
+                Key: cloudKey
+            }, function(err, data) {
+                if (err) {
+                    console.error('下载失败:', err);
+                    showToast('☁️ 云端没有找到数据');
+                    if (callback) callback(null);
+                } else {
+                    try {
+                        const cloudData = JSON.parse(data.Body);
+                        showToast('☁️ 从云端恢复数据成功');
+                        if (callback) callback(cloudData);
+                    } catch (e) {
+                        console.error('解析云端数据失败:', e);
+                        showToast('☁️ 数据格式错误');
+                        if (callback) callback(null);
+                    }
+                }
+            });
+        }
+        
+        // 同步按钮处理（用户点击同步按钮时调用）
+        function syncToCloud() {
+            if (!gameState.currentUser) {
+                showToast('请先选择角色');
+                return;
+            }
+            showToast('☁️ 正在上传...');
+            uploadToCloud(gameState.currentUser);
+        }
+        
+        // 从云端恢复数据
+        function restoreFromCloud() {
+            if (!gameState.currentUser) {
+                showToast('请先选择角色');
+                return;
+            }
+            showToast('☁️ 正在下载...');
+            downloadFromCloud(gameState.currentUser, function(cloudData) {
+                if (cloudData) {
+                    // 合并数据（保留本地关卡进度，更新其他数据）
+                    const localUser = gameState.users[gameState.currentUser];
+                    const cloudUser = cloudData.users[gameState.currentUser];
+                    
+                    if (cloudUser) {
+                        // 云端数据更完整，使用云端数据
+                        gameState = cloudData;
+                        gameState.currentUser = gameState.currentUser;
+                        saveData();
+                        showToast('☁️ 数据已恢复！');
+                        // 刷新界面
+                        showUserSelect();
+                    }
+                }
+            });
+        }
+        
+        // ==================== 每周学习报告 ====================
+        
+        // 生成学习报告内容
+        function generateWeeklyReport(user) {
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            // 计算本周学习数据
+            let wordsLearned = 0;
+            let correctCount = 0;
+            let wrongCount = 0;
+            let levelsCompleted = 0;
+            
+            // 统计本周数据
+            for (const levelId in user.levels) {
+                const level = user.levels[levelId];
+                if (level.completed && level.completedAt > weekAgo.getTime()) {
+                    levelsCompleted++;
+                    wordsLearned += level.wordsLearned || 0;
+                    correctCount += level.correctCount || 0;
+                    wrongCount += level.wrongCount || 0;
+                }
+            }
+            
+            const accuracy = wordsLearned > 0 ? Math.round((correctCount / wordsLearned) * 100) : 0;
+            
+            // 生成报告
+            const report = `
+📊 ${user.name} 的本周学习报告
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🌟 学习进度：
+   • 通关关卡：${levelsCompleted} 个
+   • 学习单词：${wordsLearned} 个
+   • 正确率：${accuracy}%
+
+📈 累计数据：
+   • 总星星：${user.stars || 0} ⭐
+   • 总钻石：${user.gems || 0} 💎
+   • 错题本：${user.wrongWords?.length || 0} 题
+
+💪 继续加油！下周见！🚀
+            `.trim();
+            
+            return report;
+        }
+        
+        // 发送每周报告（模拟发送，实际需要后端支持）
+        function sendWeeklyReport() {
+            if (!gameState.currentUser) {
+                showToast('请先选择角色');
+                return;
+            }
+            
+            const user = gameState.users[gameState.currentUser];
+            if (!user) return;
+            
+            // 生成本周报告
+            const report = generateWeeklyReport(user);
+            
+            // 显示报告内容
+            alert(report + '\n\n📧 报告已生成！\n如需发送到家长邮箱，请配置邮件服务。');
+            showToast('📊 报告已生成');
+        }
+        
+        // 检查并发送每周报告（自动调用）
+        function checkAndSendWeeklyReport() {
+            if (!gameState.currentUser) return;
+            
+            const user = gameState.users[gameState.currentUser];
+            if (!user || !user.parentEmail) return;
+            
+            const now = new Date();
+            const monday = getMonday(now);
+            const reportKey = monday.toISOString().split('T')[0];
+            
+            // 如果本周还没发送过报告
+            if (!user.weeklyReportSent || !user.weeklyReportSent.includes(reportKey)) {
+                // 发送报告
+                const report = generateWeeklyReport(user);
+                console.log('发送每周报告:', report);
+                
+                // 记录已发送
+                if (!user.weeklyReportSent) user.weeklyReportSent = [];
+                user.weeklyReportSent.push(reportKey);
+                saveData();
+            }
+        }
+        
+        // 获取本周一日期
+        function getMonday(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+        
         // 创建新用户
         function createUser(name) {
             const userId = 'user_' + Date.now();
@@ -903,7 +2073,14 @@
                 achievements: [],    // 成就
                 totalWords: 0,        // 学过的总词数
                 totalCorrect: 0,      // 正确总数
-                lastPlay: null        // 最后游玩时间
+                lastPlay: null,       // 最后游玩时间
+                // 古诗词相关
+                poemLevels: {},      // 古诗词关卡进度
+                poemWrongWords: [],   // 古诗词错题
+                totalPoems: 0,        // 学过的古诗数
+                // 每周报告
+                weeklyReportSent: [], // 已发送的报告日期
+                parentEmail: ''       // 家长邮箱（可选）
             };
             return gameState.users[userId];
         }
@@ -923,15 +2100,27 @@
             document.getElementById('loading').classList.toggle('active', show);
         }
         
+        // 处理开始游戏按钮点击
+        function handleStartGame() {
+            console.log('=== 按钮被点击了 ===');
+            startGame();
+        }
+        
         // 开始游戏
         function startGame() {
+            console.log('=== START GAME CLICKED ===');
             const nameInput = document.getElementById('userName');
+            if (!nameInput) {
+                alert('错误：找不到输入框!请刷新页面');
+                return;
+            }
             const name = nameInput.value.trim();
             
             if (!name) {
-                showToast('请输入你的名字');
+                alert('请输入你的名字再开始冒险！');
                 return;
             }
+            console.log('User name:', name);
             
             // 检查是否已存在用户
             let user = null;
@@ -1054,8 +2243,22 @@
             hp: 3,
             startTime: 0,
             timerInterval: null,
-            matchedPairs: []
+            matchedPairs: [],
+            monsterHP: 100,
+            maxMonsterHP: 100
         };
+        
+        // 怪物数据
+        const MONSTERS = [
+            { name: '单词小怪', icon: '👾', hp: 100 },
+            { name: '拼写精灵', icon: '🧟', hp: 120 },
+            { name: '语法巫师', icon: '🧙', hp: 150 },
+            { name: '听力幽灵', icon: '👻', hp: 130 },
+            { name: '记忆怪兽', icon: '🦖', hp: 180 },
+            { name: '拼写巨龙', icon: '🐲', hp: 200 },
+            { name: '语法国王', icon: '👑', hp: 250 },
+            { name: '终极boss', icon: '💀', hp: 300 }
+        ];
         
         // 题型定义
         const QUESTION_TYPES = [
@@ -1091,6 +2294,10 @@
             words = shuffleArray([...words]);
             
             // 生成题目
+            // 随机选择怪物
+            const monsterIndex = Math.floor(Math.random() * MONSTERS.length);
+            const monster = MONSTERS[monsterIndex];
+            
             gameData = {
                 level: level,
                 questions: generateQuestions(words),
@@ -1100,8 +2307,16 @@
                 startTime: Date.now(),
                 timerInterval: null,
                 matchedPairs: [],
-                levelInfo: levelInfo
+                levelInfo: levelInfo,
+                monster: monster,
+                monsterHP: monster.hp,
+                maxMonsterHP: monster.hp
             };
+            
+            // 更新怪物显示
+            document.getElementById('monsterIcon').textContent = monster.icon;
+            document.getElementById('monsterName').textContent = monster.name;
+            document.getElementById('monsterHpFill').style.width = '100%';
             
             // 切换到游戏界面
             document.getElementById('mainScreen').style.display = 'none';
@@ -1135,10 +2350,13 @@
             const questions = [];
             const numQuestions = Math.min(words.length, CONFIG.wordsPerLevel);
             
+            // 题型数组（不包括连连看，因为它一次出多对）
+            const simpleTypes = QUESTION_TYPES.filter(t => t.id !== 'match');
+            
             for (let i = 0; i < numQuestions; i++) {
                 const word = words[i];
-                // 随机选择题型
-                const type = QUESTION_TYPES[Math.floor(Math.random() * 2)]; // 先用前2种简单题型
+                // 随机选择题型（包括所有简单题型）
+                const type = simpleTypes[Math.floor(Math.random() * simpleTypes.length)];
                 questions.push({
                     word: word,
                     type: type,
@@ -1184,6 +2402,10 @@
                 showCn2EnOptions(word);
             } else if (q.type.id === 'fill') {
                 showFillQuestion(word);
+            } else if (q.type.id === 'listen') {
+                showListenQuestion(word);
+            } else if (q.type.id === 'match') {
+                showMatchQuestion();
             } else {
                 // 其他题型默认用选择
                 showEn2CnOptions(word);
@@ -1292,10 +2514,35 @@
             q.answered = true;
             q.correct = isCorrect;
             
+            // 战斗逻辑
+            const monsterIcon = document.getElementById('monsterIcon');
+            
             if (isCorrect) {
                 gameData.score += 10;
                 document.getElementById('gameStars').textContent = gameData.score;
-                showToast('正确！+10分');
+                showToast('正确！⚔️ 攻击怪物');
+                
+                // 播放正确和攻击音效
+                playSoundEffect('correct');
+                setTimeout(() => playSoundEffect('attack'), 200);
+                
+                // 攻击怪物
+                const damage = 20;
+                gameData.monsterHP = Math.max(0, gameData.monsterHP - damage);
+                const hpPercent = (gameData.monsterHP / gameData.maxMonsterHP) * 100;
+                document.getElementById('monsterHpFill').style.width = hpPercent + '%';
+                
+                // 怪物受击动画
+                monsterIcon.parentElement.classList.add('hit');
+                setTimeout(() => monsterIcon.parentElement.classList.remove('hit'), 300);
+                
+                // 检查是否击败怪物
+                if (gameData.monsterHP <= 0) {
+                    showToast('🎉 击败怪物！获得奖励');
+                    playSoundEffect('victory');
+                    const user = gameState.users[gameState.currentUser];
+                    user.gems = (user.gems || 0) + 5;
+                }
                 
                 // 从错题本移除（如果之前有）
                 const user = gameState.users[gameState.currentUser];
@@ -1304,9 +2551,22 @@
                     user.wrongWords.splice(wrongIndex, 1);
                 }
             } else {
-                gameData.hp--;
-                document.getElementById('gameHP').textContent = gameData.hp;
-                showToast('错误！-1❤️');
+                // 播放错误音效
+                playSoundEffect('wrong');
+                
+                // 检查是否有护盾
+                if (gameData.shieldActive) {
+                    gameData.shieldActive = false;
+                    showToast('🛡️ 护盾保护了你！');
+                } else {
+                    gameData.hp--;
+                    document.getElementById('gameHP').textContent = gameData.hp;
+                    showToast('错误！💔 被怪物攻击');
+                    
+                    // 怪物反击动画
+                    monsterIcon.style.transform = 'scale(1.3)';
+                    setTimeout(() => monsterIcon.style.transform = '', 300);
+                }
                 
                 // 加入错题本
                 const user = gameState.users[gameState.currentUser];
@@ -1340,6 +2600,155 @@
             utterance.lang = 'en-GB';
             utterance.rate = 0.8;
             speechSynthesis.speak(utterance);
+        }
+        
+        // 听力选择题 - 先播放发音，再让用户选择中文
+        function showListenQuestion(word) {
+            // 自动播放发音
+            setTimeout(() => playSound(), 300);
+            
+            // 显示题目（不显示英文单词，只提示听中文选）
+            document.getElementById('questionWord').textContent = '🔊';
+            document.getElementById('questionChinese').textContent = '听单词，选中文意思';
+            document.getElementById('listenBtn').textContent = '🔊 再听一次';
+            
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            grid.style.display = 'grid';
+            
+            // 获取所有中文意思作为选项
+            const allWords = [];
+            for (const key in WORDS) {
+                WORDS[key].forEach(w => {
+                    if (w.en !== word.en) allWords.push(w.cn);
+                });
+            }
+            
+            // 随机选3个干扰项
+            const wrongOptions = shuffleArray([...new Set(allWords)]).slice(0, 3);
+            const options = shuffleArray([word.cn, ...wrongOptions]);
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(opt === word.cn, word);
+                grid.appendChild(btn);
+            });
+        }
+        
+        // 连连看 - 同时出现多个单词和中文，匹配配对
+        function showMatchQuestion() {
+            // 从当前关卡词汇中选取4对
+            const user = gameState.users[gameState.currentUser];
+            let words = getLevelWords ? getLevelWords(gameData.level) : [];
+            
+            // 如果词汇不够4对，从词库补充
+            if (words.length < 4) {
+                for (const key in WORDS) {
+                    words = words.concat(WORDS[key]);
+                }
+            }
+            
+            // 随机选4对
+            const selectedWords = shuffleArray([...words]).slice(0, 4);
+            
+            // 保存配对信息
+            gameData.currentMatchPairs = selectedWords.map(w => ({ word: w, selected: null }));
+            
+            // 显示连连看区域
+            document.getElementById('optionsGrid').style.display = 'none';
+            document.getElementById('wordDisplay').style.display = 'none';
+            document.getElementById('fillArea').style.display = 'none';
+            document.getElementById('matchArea').style.display = 'flex';
+            document.getElementById('questionType').textContent = '连连看 - 配对单词和中文';
+            
+            const wordsContainer = document.getElementById('matchWords');
+            const meaningsContainer = document.getElementById('matchMeanings');
+            wordsContainer.innerHTML = '';
+            meaningsContainer.innerHTML = '';
+            
+            // 英文单词（打乱）
+            const shuffledEn = shuffleArray([...selectedWords]);
+            shuffledEn.forEach((w, idx) => {
+                const item = document.createElement('div');
+                item.className = 'match-item';
+                item.textContent = w.en;
+                item.dataset.index = selectedWords.indexOf(w);
+                item.dataset.side = 'en';
+                item.onclick = () => selectMatchItem(item, 'en', selectedWords.indexOf(w));
+                wordsContainer.appendChild(item);
+            });
+            
+            // 中文意思（打乱）
+            const shuffledCn = shuffleArray([...selectedWords]);
+            shuffledCn.forEach((w, idx) => {
+                const item = document.createElement('div');
+                item.className = 'match-item';
+                item.textContent = w.cn;
+                item.dataset.index = selectedWords.indexOf(w);
+                item.dataset.side = 'cn';
+                item.onclick = () => selectMatchItem(item, 'cn', selectedWords.indexOf(w));
+                meaningsContainer.appendChild(item);
+            });
+            
+            // 已匹配数
+            gameData.matchedCount = 0;
+            gameData.matchedPairs = [];
+        }
+        
+        // 连连看选择
+        function selectMatchItem(item, side, index) {
+            if (item.classList.contains('matched')) return;
+            
+            // 如果已经选了一个
+            const selectedEn = document.querySelector('.match-item.selected[data-side="en"]');
+            const selectedCn = document.querySelector('.match-item.selected[data-side="cn"]');
+            
+            if (side === 'en' && selectedEn) {
+                selectedEn.classList.remove('selected');
+            }
+            if (side === 'cn' && selectedCn) {
+                selectedCn.classList.remove('selected');
+            }
+            
+            item.classList.add('selected');
+            item.dataset.side = side;
+            
+            // 如果两边都选了，检查是否匹配
+            const newSelectedEn = document.querySelector('.match-item.selected[data-side="en"]');
+            const newSelectedCn = document.querySelector('.match-item.selected[data-side="cn"]');
+            
+            if (newSelectedEn && newSelectedCn) {
+                const enIndex = parseInt(newSelectedEn.dataset.index);
+                const cnIndex = parseInt(newSelectedCn.dataset.index);
+                
+                if (enIndex === cnIndex) {
+                    // 匹配成功
+                    newSelectedEn.classList.remove('selected');
+                    newSelectedCn.classList.remove('selected');
+                    newSelectedEn.classList.add('matched');
+                    newSelectedCn.classList.add('matched');
+                    
+                    gameData.matchedCount++;
+                    showToast('配对成功！');
+                    
+                    // 检查是否完成所有配对
+                    if (gameData.matchedCount >= 4) {
+                        setTimeout(() => {
+                            // 连连看全对算正确
+                            checkAnswer(true, { en: 'match', cn: 'match' });
+                        }, 500);
+                    }
+                } else {
+                    // 匹配失败
+                    setTimeout(() => {
+                        newSelectedEn.classList.remove('selected');
+                        newSelectedCn.classList.remove('selected');
+                        showToast('配对错误，再试试');
+                    }, 300);
+                }
+            }
         }
         
         // 计时器
@@ -1388,6 +2797,11 @@
             
             saveData();
             
+            // 自动同步到云端（如果启用）
+            if (window.cloudSyncEnabled && gameState.currentUser) {
+                uploadToCloud(gameState.currentUser);
+            }
+            
             // 显示结果
             const message = victory 
                 ? `通关成功！获得 ${stars} ⭐` 
@@ -1413,6 +2827,8 @@
         
         // 初始化
         function init() {
+            console.log('=== INIT START ===');
+            console.log('GAME_LEVELS loaded, count:', GAME_LEVELS.length);
             loadData();
             
             // 检查是否有用户
@@ -1421,10 +2837,238 @@
             } else {
                 document.getElementById('loginScreen').style.display = 'flex';
             }
+            
+            // 绑定开始游戏按钮
+            const startBtn = document.getElementById('startGameBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    console.log('按钮被点击了！');
+                    startGame();
+                });
+                console.log('开始按钮事件已绑定');
+            }
+            
+            // 绑定底部导航点击事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    switchPage(page);
+                });
+            });
         }
         
-        // 页面加载完成后初始化
-        window.onload = init;
+        // 页面切换
+        function switchPage(pageName) {
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === pageName);
+            });
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // 显示目标页面
+            const pageMap = {
+                'home': 'pageHome',
+                'poetry': 'pagePoetry',
+                'wrongbook': 'pageWrongBook',
+                'bag': 'pageBag',
+                'achievements': 'pageAchievements'
+            };
+            const targetPage = document.getElementById(pageMap[pageName]);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            }
+            
+            // 渲染页面内容
+            if (pageName === 'wrongbook') {
+                renderWrongBook();
+            } else if (pageName === 'bag') {
+                renderBag();
+            } else if (pageName === 'achievements') {
+                renderAchievements();
+            }
+        }
+        
+        // 渲染错题本
+        function renderWrongBook() {
+            const user = gameState.users[gameState.currentUser];
+            const wrongList = document.getElementById('wrongList');
+            const wrongWords = user.wrongWords || [];
+            
+            if (wrongWords.length === 0) {
+                wrongList.innerHTML = `
+                    <div class="wrong-empty">
+                        <div class="wrong-empty-icon">🎉</div>
+                        <p>太棒了！没有错题</p>
+                        <p>继续保持哦~</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            wrongList.innerHTML = wrongWords.map((word, idx) => `
+                <div class="wrong-item">
+                    <div class="wrong-word">
+                        <span class="wrong-en">${word.en}</span>
+                        <span class="wrong-cn">${word.cn}</span>
+                    </div>
+                    <button class="wrong-btn" onclick="playWordSound('${word.en}')">🔊 朗读</button>
+                </div>
+            `).join('');
+        }
+        
+        // 播放单词发音（错题本）
+        function playWordSound(word) {
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-GB';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+        
+        // 使用魔法卡
+        function useMagicCard(type) {
+            const user = gameState.users[gameState.currentUser];
+            const cards = user.magicCards || { hint: 0, shield: 0, attack: 0 };
+            
+            if (type === 'hint') {
+                // 提示卡 - 显示当前题目的正确答案
+                const currentQ = gameData.questions[gameData.currentIndex];
+                if (currentQ) {
+                    showToast('💡 提示：' + currentQ.word.cn);
+                }
+            } else if (type === 'shield') {
+                // 护盾 - 本题答错不扣血
+                gameData.shieldActive = true;
+                showToast('🛡️ 护盾已激活，本题答错不扣血！');
+            } else if (type === 'attack') {
+                // 攻击卡 - 对怪物造成额外伤害
+                const damage = 30;
+                gameData.monsterHP = Math.max(0, gameData.monsterHP - damage);
+                const hpPercent = (gameData.monsterHP / gameData.maxMonsterHP) * 100;
+                document.getElementById('monsterHpFill').style.width = hpPercent + '%';
+                showToast('⚔️ 使用攻击卡！对怪物造成30伤害');
+                
+                // 检查是否击败怪物
+                if (gameData.monsterHP <= 0) {
+                    showToast('🎉 击败怪物！获得奖励');
+                    user.gems = (user.gems || 0) + 5;
+                }
+            }
+            
+            // 标记卡牌已使用
+            saveData();
+        }
+        
+        // 修改答错逻辑，护盾生效
+        function checkAnswerWithShield(isCorrect, word) {
+            // 如果有护盾且答错，不扣血
+            if (!isCorrect && gameData.shieldActive) {
+                gameData.shieldActive = false;
+                showToast('🛡️ 护盾保护了你！');
+                // 仍然加入错题本，但不扣血
+                const user = gameState.users[gameState.currentUser];
+                if (!user.wrongWords) user.wrongWords = [];
+                if (!user.wrongWords.find(w => w.en === word.en)) {
+                    user.wrongWords.push(word);
+                }
+                saveData();
+                
+                // 继续下一题
+                setTimeout(() => {
+                    gameData.currentIndex++;
+                    showQuestion();
+                }, 800);
+                return true;
+            }
+            return false;
+        }
+        
+        // 渲染背包
+        function renderBag() {
+            const user = gameState.users[gameState.currentUser];
+            const bagGrid = document.getElementById('bagGrid');
+            const bagEmpty = document.getElementById('bagEmpty');
+            
+            // 示例背包物品（后续可以添加更多）
+            const items = [
+                { id: 'gem_blue', name: '蓝宝石', icon: '💎', count: user.gems || 0 },
+                { id: 'star', name: '星星', icon: '⭐', count: user.stars || 0 }
+            ];
+            
+            const itemsWithCount = items.filter(item => item.count > 0);
+            
+            if (itemsWithCount.length === 0) {
+                bagGrid.style.display = 'none';
+                bagEmpty.style.display = 'block';
+                return;
+            }
+            
+            bagGrid.style.display = 'grid';
+            bagEmpty.style.display = 'none';
+            
+            bagGrid.innerHTML = items.map(item => `
+                <div class="bag-item">
+                    <div class="bag-item-icon">${item.icon}</div>
+                    <div class="bag-item-name">${item.name}</div>
+                    <div class="bag-item-count">x${item.count}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 成就数据
+        const ACHIEVEMENTS = [
+            { id: 'first_level', name: '初出茅庐', desc: '完成第一个关卡', icon: '🌟', req: 1 },
+            { id: 'ten_words', name: '单词达人', desc: '学习10个单词', icon: '📚', req: 10 },
+            { id: 'hundred_words', name: '词汇大师', desc: '学习100个单词', icon: '🏅', req: 100 },
+            { id: 'five_stars', name: '星级学员', desc: '累计获得5颗星', icon: '⭐', req: 5, type: 'stars' },
+            { id: 'perfect', name: '完美通关', desc: '一次通关获得3星', icon: '💯', req: 1, type: 'perfect' },
+            { id: 'no_wrong', name: '全对战神', desc: '一关全部答对', icon: '🔥', req: 1, type: 'nowrong' }
+        ];
+        
+        // 渲染成就
+        function renderAchievements() {
+            const user = gameState.users[gameState.currentUser];
+            const list = document.getElementById('achievementList');
+            
+            // 检查成就达成情况
+            const userAchievements = user.achievements || [];
+            const totalWords = user.totalWords || 0;
+            const totalStars = user.stars || 0;
+            
+            list.innerHTML = ACHIEVEMENTS.map(ach => {
+                let unlocked = false;
+                
+                if (ach.type === 'stars') {
+                    unlocked = totalStars >= ach.req;
+                } else if (ach.type === 'perfect') {
+                    // 检查是否有任何关卡获得3星
+                    unlocked = Object.values(user.levels || {}).some(l => l.stars === 3);
+                } else if (ach.type === 'nowrong') {
+                    // 检查是否有任何关卡全对（需要记录）
+                    unlocked = userAchievements.includes(ach.id);
+                } else {
+                    unlocked = totalWords >= ach.req;
+                }
+                
+                const isUnlocked = unlocked || userAchievements.includes(ach.id);
+                
+                return `
+                    <div class="achievement-item ${isUnlocked ? '' : 'locked'}">
+                        <div class="achievement-icon">${ach.icon}</div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${ach.name}</div>
+                            <div class="achievement-desc">${ach.desc}</div>
+                        </div>
+                        <div class="achievement-status">${isUnlocked ? '✅ 已达成' : '🔒 未达成'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 注意：init() 现在由 waitForWords() 调用，不再使用 window.onload
     </script>
 </body>
 </html>
