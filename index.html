@@ -1828,10 +1828,18 @@
             try {
                 const data = localStorage.getItem(STORAGE_KEY);
                 if (data) {
-                    gameState = JSON.parse(data);
+                    const parsed = JSON.parse(data);
+                    // 确保数据结构完整
+                    if (parsed && typeof parsed === 'object') {
+                        gameState = parsed;
+                        if (!gameState.users) gameState.users = {};
+                        if (gameState.currentUser === undefined) gameState.currentUser = null;
+                    }
                 }
+                console.log('数据加载完成，用户数:', Object.keys(gameState.users).length);
             } catch (e) {
-                console.error('加载数据失败:', e);
+                console.error('加载数据失败，重置数据:', e);
+                gameState = { currentUser: null, users: {}, currentLevel: 1 };
             }
         }
         
