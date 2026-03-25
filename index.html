@@ -2103,7 +2103,12 @@
         // 处理开始游戏按钮点击
         function handleStartGame() {
             console.log('=== 按钮被点击了 ===');
-            startGame();
+            try {
+                startGame();
+            } catch(e) {
+                console.error('startGame error:', e);
+                alert('出错了：' + e.message + '\n请截图发给爸爸妈妈');
+            }
         }
         
         // 开始游戏
@@ -2122,10 +2127,18 @@
             }
             console.log('User name:', name);
             
+            // 确保 gameState 已初始化
+            if (!gameState) {
+                gameState = { currentUser: null, users: {}, currentLevel: 1 };
+            }
+            if (!gameState.users) {
+                gameState.users = {};
+            }
+            
             // 检查是否已存在用户
             let user = null;
             for (const id in gameState.users) {
-                if (gameState.users[id].name === name) {
+                if (gameState.users[id] && gameState.users[id].name === name) {
                     user = gameState.users[id];
                     break;
                 }
@@ -2134,6 +2147,11 @@
             // 创建新用户
             if (!user) {
                 user = createUser(name);
+            }
+            
+            if (!user) {
+                alert('创建用户失败，请刷新重试');
+                return;
             }
             
             gameState.currentUser = user.id;
@@ -2180,21 +2198,44 @@
         
         // 显示主界面
         function showMainScreen() {
+            console.log('=== showMainScreen called, currentUser:', gameState.currentUser);
             const user = gameState.users[gameState.currentUser];
-            if (!user) return;
+            if (!user) {
+                console.error('No user found for id:', gameState.currentUser);
+                alert('用户数据丢失，请重新输入名字');
+                showLogin();
+                return;
+            }
             
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('userSelect').style.display = 'none';
-            document.getElementById('mainScreen').style.display = 'block';
+            const loginScreen = document.getElementById('loginScreen');
+            const userSelect = document.getElementById('userSelect');
+            const mainScreen = document.getElementById('mainScreen');
             
-            // 更新头部信息
-            document.getElementById('headerAvatar').textContent = user.avatar;
-            document.getElementById('headerName').textContent = user.name;
-            document.getElementById('totalStars').textContent = user.stars;
-            document.getElementById('totalGems').textContent = user.gems;
+            if (loginScreen) loginScreen.style.display = 'none';
+            if (userSelect) userSelect.style.display = 'none';
+            if (!mainScreen) {
+                alert('找不到主界面元素，请刷新页面');
+                return;
+            }
+            mainScreen.style.display = 'block';
+            
+            // 更新头部信息（安全获取元素）
+            const headerAvatar = document.getElementById('headerAvatar');
+            const headerName = document.getElementById('headerName');
+            const totalStars = document.getElementById('totalStars');
+            const totalGems = document.getElementById('totalGems');
+            
+            if (headerAvatar) headerAvatar.textContent = user.avatar || '🧙';
+            if (headerName) headerName.textContent = user.name;
+            if (totalStars) totalStars.textContent = user.stars || 0;
+            if (totalGems) totalGems.textContent = user.gems || 0;
             
             // 渲染关卡
-            renderLevels();
+            try {
+                renderLevels();
+            } catch(e) {
+                console.error('renderLevels error:', e);
+            }
         }
         
         // 渲染关卡
